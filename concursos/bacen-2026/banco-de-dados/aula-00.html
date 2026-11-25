@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>Aula 00 · Banco de Dados</title>
+
+
+<style>
+/* VOICE: material de revisão calmo e leve, para ler muitas vezes
+   IDEA: caderno de estudo em fichas: cada conceito é um cartão, cada processo é um fluxo com setas
+   PICTURE: fluxos (passo → passo) e fichas lado a lado, no lugar das tabelas
+   COLOUR and TYPE: fundo cinza claro, cartões brancos, verde claro + amarelo claro + azul claro; Inter 300/400
+   LAYOUT: coluna central de até 1100px, numeral suave à esquerda de cada seção, fichas em grade fluida */
+:root{color-scheme:light;
+ --bg:#f1f5f9;--card:#ffffff;--ink:#475569;--head:#334155;--mut:#94a3b8;--line:#e2e8f0;
+ --green:#dcfce7;--green-b:#bbf7d0;--green-t:#15803d;
+ --yellow:#fef9c3;--yellow-b:#fde68a;--yellow-t:#a16207;
+ --blue:#e0f2fe;--blue-b:#bae6fd;--blue-t:#0369a1;
+ --shadow:0 1px 2px rgba(15,23,42,.04),0 4px 14px rgba(15,23,42,.05)}
+*{box-sizing:border-box;min-width:0}
+html{scroll-padding-top:72px;scroll-behavior:smooth}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--bg);color:var(--ink);font:300 16px/1.65 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;overflow-x:clip;-webkit-font-smoothing:antialiased}
+b,strong{font-weight:600;color:var(--head)}
+.wrap{max-width:1100px;margin:0 auto;padding:0 max(4vw,16px)}
+header{padding:44px 0 22px}
+h1{font-weight:300;font-size:clamp(30px,5vw,44px);line-height:1.12;letter-spacing:-.02em;color:var(--head);margin:0 0 10px;text-wrap:balance}
+.sub{margin:0;max-width:68ch;color:var(--ink)}
+nav{position:sticky;top:0;z-index:5;background:rgba(241,245,249,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+@media(max-width:900px){nav{position:static}}
+.scroll{overflow-x:auto;display:flex;gap:6px;padding:10px 0}
+.scroll a{flex:none;color:var(--ink);text-decoration:none;font-size:14px;font-weight:400;padding:8px 14px;border-radius:999px;background:var(--card);border:1px solid var(--line)}
+.scroll a:hover,.scroll a:focus-visible{background:var(--blue);border-color:var(--blue-b);color:var(--blue-t);outline:none}
+main{padding-bottom:10px}
+section{display:grid;grid-template-columns:72px minmax(0,1fr);gap:0 22px;padding:34px 0;border-top:1px solid var(--line)}
+section>.n{font-weight:300;font-size:40px;line-height:1;color:var(--blue-t);opacity:.55}
+@media(max-width:700px){section{grid-template-columns:minmax(0,1fr)}section>.n{font-size:30px;margin-bottom:8px}}
+h2{font-weight:400;font-size:clamp(22px,3vw,28px);line-height:1.2;letter-spacing:-.01em;color:var(--head);margin:0 0 8px}
+h3{font-weight:500;font-size:17px;color:var(--head);margin:28px 0 10px}
+.inc{display:inline-block;font-size:13px;font-weight:500;background:var(--blue);color:var(--blue-t);padding:3px 12px;border-radius:999px;margin-bottom:14px}
+.inc.hi{background:var(--green);color:var(--green-t)}
+p{max-width:72ch;margin:8px 0}
+mark{background:var(--yellow);color:var(--head);padding:0 4px;border-radius:4px}
+a{color:var(--blue-t)}
+.box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:14px 0;box-shadow:var(--shadow);overflow-wrap:anywhere}
+.box h4{margin:0 0 8px;font-size:15px;font-weight:600;color:var(--head)}
+.box.red{background:#fffdf0;border-color:var(--yellow-b)}
+.box.red h4{color:var(--yellow-t)}
+.box ul,.box ol{margin:6px 0 0;padding-left:20px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+ul.tight{padding-left:20px;margin:8px 0}ul.tight li{margin:4px 0}
+.formula{font-weight:300;font-size:clamp(20px,3vw,26px);color:var(--blue-t);margin:12px 0}
+.C{color:var(--green-t);font-weight:600}.E{color:var(--yellow-t);font-weight:600}
+/* fichas (substituem tabelas) */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:12px;margin:12px 0 18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;box-shadow:var(--shadow);overflow-wrap:anywhere}
+.card h5{margin:0 0 8px;font-size:15px;font-weight:600;color:var(--head);padding-bottom:8px;border-bottom:1px solid var(--line)}
+.card dl{margin:0;display:grid;gap:7px}
+.card dt{font-size:12px;font-weight:500;color:var(--mut);margin:0}
+.card dd{margin:0;font-size:15px}
+.card .solo{font-size:15px}
+/* fluxo */
+.flow{display:flex;align-items:stretch;gap:0;margin:14px 0 20px;flex-wrap:wrap}
+.step{flex:1 1 200px;background:var(--card);border:1px solid var(--line);border-top:4px solid var(--blue-b);border-radius:14px;padding:14px 16px;box-shadow:var(--shadow);overflow-wrap:anywhere}
+.step:nth-of-type(3n+2){border-top-color:var(--green-b)}.step:nth-of-type(3n){border-top-color:var(--yellow-b)}
+.step h5{margin:0 0 8px;font-size:15px;font-weight:600;color:var(--head)}
+.step dl{margin:0;display:grid;gap:6px}.step dt{font-size:12px;font-weight:500;color:var(--mut)}.step dd{margin:0;font-size:14.5px}
+.arrow{flex:0 0 34px;display:flex;align-items:center;justify-content:center;color:var(--blue-t);font-size:22px;opacity:.6}
+@media(max-width:760px){.flow{flex-direction:column}.step{flex:auto}.arrow{flex:0 0 30px;transform:rotate(90deg)}}
+/* setas X → Y */
+.arrows{list-style:none;margin:12px 0 18px;padding:0;display:grid;gap:8px}
+.arrows li{display:grid;grid-template-columns:minmax(0,1fr) 28px minmax(0,1.4fr);align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px;box-shadow:var(--shadow);overflow-wrap:anywhere}
+.arrows .from{font-weight:500;color:var(--head)}
+.arrows .to-a{color:var(--green-t);text-align:center;opacity:.7}
+.arrows .hd{background:none;border:0;box-shadow:none;padding:0 14px;font-size:12px;font-weight:500;color:var(--mut)}
+@media(max-width:520px){.arrows li{grid-template-columns:minmax(0,1fr)}.arrows .to-a{display:none}.arrows .from::after{content:" →";color:var(--green-t)}}
+/* veredito C/E */
+.verdicts{list-style:none;margin:12px 0 18px;padding:0;display:grid;gap:8px}
+.verdicts li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;box-shadow:var(--shadow);overflow-wrap:anywhere}
+.badge{grid-row:span 2;align-self:start;font-size:12px;font-weight:600;padding:3px 10px;border-radius:999px;white-space:nowrap}
+.badge.C{background:var(--green);color:var(--green-t)}.badge.E{background:var(--yellow);color:var(--yellow-t)}
+.verdicts .why{font-size:14px;color:var(--mut)}
+/* painel de incidência */
+.bars{display:grid;gap:8px;margin:10px 0 4px;max-width:760px}
+.bar{display:grid;grid-template-columns:minmax(0,15em) minmax(0,1fr) 3em;gap:12px;align-items:center;font-size:14px}
+.bar i{display:block;height:12px;border-radius:999px;background:var(--blue-b)}
+.bar.top i{background:#86efac}
+.bar span:nth-child(2){background:var(--card);border-radius:999px;border:1px solid var(--line)}
+.bar span:last-child{text-align:right;font-variant-numeric:tabular-nums;font-weight:500;color:var(--head)}
+@media(max-width:520px){.bar{grid-template-columns:minmax(0,9em) minmax(0,1fr) 2.4em}}
+.note{font-size:13px;color:var(--mut)}
+/* caderno de erros */
+.erros{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:14px;margin-top:12px}
+.err{background:var(--card);border:1px solid var(--yellow-b);border-left:5px solid #fcd34d;border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:8px;box-shadow:var(--shadow);overflow-wrap:anywhere}
+.err.alt{border-color:var(--blue-b);border-left:5px dashed #7dd3fc}
+.err[hidden]{display:none}
+.err .q{font-weight:500;font-size:18px;color:var(--head);line-height:1.2}
+.err .src{font-size:13px;color:var(--mut)}
+.err .stmt{font-size:15px}
+.res{display:flex;flex-direction:column;gap:6px;font-size:14px}
+.res span{padding:5px 10px;border-radius:8px;font-weight:500;overflow-wrap:anywhere}
+.you{background:var(--yellow);color:var(--yellow-t)}
+.gab{background:var(--green);color:var(--green-t)}
+.rule{border-top:1px solid var(--line);padding-top:8px;font-size:14.5px;color:var(--head)}
+.seg{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.seg button{font:inherit;font-size:14px;font-weight:400;min-height:40px;padding:6px 16px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--green);border-color:var(--green-b);color:var(--green-t);font-weight:500}
+.seg button:focus-visible{outline:2px solid var(--blue-b);outline-offset:2px}
+/* flashcards */
+#flash{display:grid;gap:8px}
+details{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px;box-shadow:var(--shadow);overflow-wrap:anywhere}
+summary{cursor:pointer;font-weight:400;color:var(--head);list-style:none;display:flex;gap:12px}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"+";font-weight:400;color:var(--blue-t);width:1em;flex:none}
+details[open]{border-color:var(--green-b)}
+details[open] summary::before{content:"−"}
+summary:focus-visible{outline:2px solid var(--blue-b);outline-offset:4px;border-radius:4px}
+details p{margin:8px 0 0 1.8em}
+footer{border-top:1px solid var(--line);padding:22px 0 50px;color:var(--mut);font-size:14px}
+
+/* ajustes de toque e leitura em celular */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{-webkit-tap-highlight-color:rgba(3,105,161,.12)}
+details{padding:0 16px}
+summary{padding:12px 0;min-height:44px;align-items:flex-start}
+details p{margin:0 0 12px 1.8em}
+code{font-size:max(.9em,12px)}
+.scroll a{min-height:40px;display:inline-flex;align-items:center}
+.seg button{min-height:44px}
+@media(max-width:600px){h1{font-size:clamp(26px,8vw,34px)}.box,.card,.err,.step{padding:14px}section{padding:26px 0}}
+.site-back{display:inline-flex;align-items:center;min-height:44px;margin-top:10px;padding:0 14px;border-radius:999px;background:#fff;border:1px solid #e2e8f0;color:#0369a1;font-size:14px;text-decoration:none}.site-back:hover,.site-back:focus-visible{background:#e0f2fe;outline:none}.site-back[hidden]{display:none}
+</style>
+
+<link href="https://fonts.googleapis.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/></head>
+<body>
+<div class="wrap"><a class="site-back" id="siteBack" href="../../../index.html#/bacen-2026/banco-de-dados" hidden>← Todas as apostilas</a></div>
+<div class="wrap">
+<header>
+<h1>Aula 00: conceitos básicos de banco de dados</h1>
+<p class="sub">Revisão final da Aula 00 do Estratégia (BACEN, TI, prof. Lucas Fargoni). Os temas que mais caem vêm primeiro, e o caderno dos seus erros na lista CEBRASPE fica logo abaixo.</p>
+</header>
+</div>
+<nav><div class="wrap scroll">
+<a href="#erros">Meus erros</a><a href="#incidencia">Incidência</a><a href="#modelos">Modelos de dados</a><a href="#ansi">3 esquemas</a><a href="#indep">Independência</a><a href="#sgbd">BD · SGBD · SBD</a><a href="#ad-dba">AD × DBA</a><a href="#acid">ACID</a><a href="#redund">Redundância</a><a href="#historia">Hierárquico · rede · NoSQL</a><a href="#meta">Metadados</a><a href="#ambiente">Ambiente do SGBD</a><a href="#pegadinhas">Pegadinhas C/E</a>
+</div></nav>
+<main class="wrap">
+<section id="erros"><div class="n">!</div><div>
+<h2>Caderno de erros: lista CEBRASPE</h2>
+<span class="inc hi">Revise isto antes de tudo</span>
+<p>As <b>fichas amarelas</b> são as questões em que você marcou <b>X</b> na correção. As <b>fichas azuis com borda tracejada</b> não têm X, mas a resposta que você marcou de caneta é <b>diferente do gabarito</b> da página 154. Vale conferir.</p>
+<div class="erros" id="errlist"></div>
+</div></section>
+<section id="incidencia"><div class="n">%</div><div>
+<h2>Onde caem as questões desta aula</h2>
+<p>Quantidade de questões das 5 listas da aula (CEBRASPE, CESGRANRIO, FGV, Vunesp e multibancas) que tratam de cada tema. Uma questão pode entrar em mais de um tema.</p>
+<div class="bars" id="bars"></div>
+<p class="note">Contagem aproximada, feita por palavras-chave nos enunciados das listas (p. 141–178).</p>
+</div></section>
+<section id="modelos"><div class="n">01</div><div>
+<h2>Modelos de dados: conceitual, lógico, físico</h2>
+<span class="inc hi">Mais cobrado · o assunto favorito da FGV</span>
+<p>Modelo de dados = <b>coleção de conceitos para descrever a estrutura</b> do BD, permitindo a <b>abstração</b> (esconde detalhes de armazenamento). A modelagem se apoia em <b>objetos de dados, atributos e relacionamentos</b>.</p>
+<div class="flow"><div class="step"><h5>Conceitual (alto nível)</h5><dl><dt>Abstração</dt><dd>Máxima</dd><dt>Responde</dt><dd><b>QUAIS</b> dados</dd><dt>Para quem</dt><dd>Usuário de negócio</dd><dt>Depende de SGBD?</dt><dd><b>Não</b>: independe de hardware, software e SGBD</dd><dt>Exemplos/elementos</dt><dd>MER/DER: entidades, atributos, relacionamentos</dd></dl></div><div aria-hidden="true" class="arrow">→</div><div class="step"><h5>Lógico (representativo / de implementação)</h5><dl><dt>Abstração</dt><dd>Intermediária</dd><dt>Responde</dt><dd>Como se organizam para <b>implementar</b></dd><dt>Para quem</dt><dd>Desenvolvedores</dd><dt>Depende de SGBD?</dt><dd>Depende do <b>tipo</b> de SGBD (ex.: relacional)</dd><dt>Exemplos/elementos</dt><dd>Tabelas, chaves, tipos, restrições, normalização</dd></dl></div><div aria-hidden="true" class="arrow">→</div><div class="step"><h5>Físico (baixo nível)</h5><dl><dt>Abstração</dt><dd>Mínima</dd><dt>Responde</dt><dd><b>COMO</b> são armazenados</dd><dt>Para quem</dt><dd>DBA / SGBD</dd><dt>Depende de SGBD?</dt><dd>Sim, do SGBD específico</dd><dt>Exemplos/elementos</dt><dd><b>Estruturas de armazenamento, índices, métodos e caminhos de acesso</b>, particionamento, tablespaces</dd></dl></div></div>
+<div class="grid2">
+<div class="box"><h4>Fluxo do projeto de BD</h4>Requisitos → <b>projeto conceitual</b> (gera o MER) → <b>projeto lógico</b> → <b>projeto físico</b> (o SQL DDL gera o esquema físico).</div>
+<div class="box"><h4>Sinônimos que confundem</h4>Alguns autores chamam o conceitual de <b>"modelo lógico baseado em objetos"</b> e o lógico de <b>"modelo lógico baseado em registros"</b>. Os dois de <b>maior abstração</b> são o conceitual e o lógico (FGV).</div>
+</div>
+<div class="box red"><h4>Seus erros neste tema (Q13 e Q17)</h4><ul>
+<li><b>Estruturas de armazenamento e métodos de acesso</b> fazem parte do projeto <b>FÍSICO</b>, e não do lógico.</li>
+<li>O modelo conceitual usa os <b>requisitos de DADOS</b>. Os requisitos de negócio geram as funcionalidades do sistema. Não é ele quem "aplica regras para evitar redundância" (isso é normalização, no lógico).</li>
+<li>O <b>modelo lógico não considera desempenho</b> (Q14: E). Desempenho é assunto do físico.</li></ul></div>
+<h3>Níveis de abstração (Silberschatz): não confunda com os modelos</h3>
+<div class="flow"><div class="step"><h5>Visão (view)</h5><dl><dt>Descreve</dt><dd>Só a parte que interessa ao usuário; simplifica a interação</dd><dt>Abrange</dt><dd><b>Parte</b> do BD; podem existir várias visões</dd></dl></div><div aria-hidden="true" class="arrow">→</div><div class="step"><h5>Lógico</h5><dl><dt>Descreve</dt><dd><b>Que</b> dados estão armazenados e as relações entre eles</dd><dt>Abrange</dt><dd>BD <b>inteiro</b>, em estruturas simples</dd></dl></div><div aria-hidden="true" class="arrow">→</div><div class="step"><h5>Físico</h5><dl><dt>Descreve</dt><dd><b>Como</b> os dados são realmente armazenados</dd><dt>Abrange</dt><dd>Estruturas complexas de baixo nível</dd></dl></div></div>
+<p>Pegadinha (Q23): o nível que define <b>detalhadamente como os dados são armazenados e acessados</b> é o <b>físico</b>, e não o de visão.</p>
+<h3>Esquema × instância</h3>
+<div class="cards"><div class="card"><h5>Esquema</h5><dl><dt>O que é</dt><dd>Descrição/<b>estrutura</b> do BD (projeto geral)</dd><dt>Sinônimos</dt><dd><b>Intenção</b>, conotação</dd><dt>Muda?</dt><dd>Raramente</dd><dt>Analogia em POO</dt><dd>Classe</dd></dl></div><div class="card"><h5>Instância</h5><dl><dt>O que é</dt><dd>Dados armazenados <b>em um momento</b> ("fotografia")</dd><dt>Sinônimos</dt><dd><b>Extensão</b>, estado, ocorrências, snapshot</dd><dt>Muda?</dt><dd>A cada insert/update/delete</dd><dt>Analogia em POO</dt><dd>Objeto</dd></dl></div></div>
+<p><b>Date</b>: <b>campo</b> (menor unidade) → <b>registro</b> (coleção de campos relacionados) → <b>arquivo</b> (todas as ocorrências de um tipo de registro).</p>
+</div></section>
+<section id="ansi"><div class="n">02</div><div>
+<h2>Arquitetura em três esquemas (ANSI/SPARC)</h2>
+<span class="inc hi">Muito cobrado · foram 2 dos seus erros</span>
+<p><b>Objetivo:</b> <mark>separar as aplicações do usuário do banco de dados físico</mark>. São três níveis independentes: <b>interno, conceitual e externo</b>.</p>
+<div class="flow"><div class="step"><h5>Externo</h5><dl><dt>Também chamado</dt><dd>Visão; nível lógico <b>do usuário</b></dd><dt>Descreve</dt><dd>Como os dados são <b>vistos por usuários individuais</b>; oculta o resto</dd><dt>Abrangência</dt><dd><b>Vários</b> esquemas externos, um por grupo</dd><dt>Palavras-gatilho na prova</dt><dd>"visões do usuário", "parte que interessa a um grupo"</dd></dl></div><div aria-hidden="true" class="arrow">→</div><div class="step"><h5>Conceitual</h5><dl><dt>Também chamado</dt><dd>Nível lógico <b>de comunidade</b>; às vezes só "lógico"</dd><dt>Descreve</dt><dd><b>Estrutura do BD inteiro para uma comunidade de usuários</b>: entidades, tipos de dados, relacionamentos, operações do usuário e <b>restrições</b>; oculta o físico</dd><dt>Abrangência</dt><dd><b>Um</b> esquema, com <b>todo o conteúdo</b></dd><dt>Palavras-gatilho na prova</dt><dd>"comunidade de usuários", "todo o conteúdo de informações"</dd></dl></div><div aria-hidden="true" class="arrow">→</div><div class="step"><h5>Interno</h5><dl><dt>Também chamado</dt><dd>Nível de <b>armazenamento</b></dd><dt>Descreve</dt><dd>Como os dados são <b>fisicamente armazenados</b>: índices, hashing, ponteiros, <b>caminhos de acesso</b></dd><dt>Abrangência</dt><dd><b>Um</b> esquema</dd><dt>Palavras-gatilho na prova</dt><dd>"armazenamento físico", "caminhos de acesso"</dd></dl></div></div>
+<div class="grid2">
+<div class="box"><h4>Cada um no seu quadrado</h4>Cada nível tem seu próprio <b>registro, esquema e DDL</b>: externo/externo/externo, conceitual/conceitual/conceitual, interno/interno/interno. O usuário acessa por uma <b>DSL</b> (sublinguagem de dados) = <b>DDL + DML</b>.</div>
+<div class="box"><h4>Mapeamentos</h4><ul class="tight"><li><b>Externo/conceitual</b>: ligado à independência <b>lógica</b></li><li><b>Conceitual/interno</b>: ligado à independência <b>física</b></li><li><b>Externo/externo</b>: um esquema externo criado a partir de outro</li><li>Mapeamentos = transformar requisições e resultados entre os níveis</li></ul></div>
+</div>
+<div class="box red"><h4>Seus erros neste tema (Q21 e Q53)</h4><ul>
+<li>"Estrutura de <b>todo o BD para uma comunidade de usuários</b>, com foco em entidades, tipos de dados, relacionamentos, operações e restrições" = nível <b>CONCEITUAL</b>. Não é o interno.</li>
+<li>"Interno → armazenamento físico; externo → como os usuários veem; conceitual → <b>todo o conteúdo</b> de informações" = <span class="C">CERTO</span>.</li></ul></div>
+<h3>Cascas de banana CESPE</h3>
+<ul class="verdicts"><li><span class="badge E">Errado</span><span>No nível <b>conceitual</b>, cada esquema externo descreve a parte que interessa a um grupo…</span><span class="why">Mistura os níveis: isso é o nível <b>externo</b></span></li><li><span class="badge E">Errado</span><span>O esquema do nível <b>externo</b> oculta o físico e descreve entidades, tipos de dados…</span><span class="why">Essa é a descrição do <b>conceitual</b></span></li><li><span class="badge C">Certo</span><span>Na arquitetura de três esquemas, o nível externo apresenta uma série de visões do usuário</span><span class="why">Externo = visões</span></li><li><span class="badge C">Certo</span><span>No nível interno são descritos os caminhos de acesso</span><span class="why">Interno = físico</span></li><li><span class="badge E">Errado</span><span>Os níveis são interno, <b>intermediário</b> e externo</span><span class="why">O do meio é o <b>conceitual</b></span></li><li><span class="badge E">Errado</span><span>Todos os grupos usam o mesmo esquema externo</span><span class="why">Há um esquema externo por grupo</span></li><li><span class="badge E">Errado</span><span>Esquemas dividem fisicamente as tabelas, evitando acesso cruzado</span><span class="why">Esquema é descrição, não divisão física</span></li><li><span class="badge E">Errado</span><span>Visões exibem aos aplicativos as alterações feitas no esquema conceitual</span><span class="why">Visões <b>escondem</b> essas alterações (independência)</span></li><li><span class="badge E">Errado</span><span>Uma desvantagem da arquitetura é não permitir independência de dados</span><span class="why">Ela existe justamente para garanti-la</span></li></ul>
+</div></section>
+<section id="indep"><div class="n">03</div><div>
+<h2>Independência de dados</h2>
+<span class="inc">Alta incidência · casada com os 3 esquemas</span>
+<p><b>Definição:</b> capacidade de <b>alterar o esquema de um nível sem alterar o esquema do nível SUPERIOR</b>. Por isso só existem <b>dois</b> tipos: o nível externo não tem nível acima dele.</p>
+<div class="cards"><div class="card"><h5>Lógica</h5><dl><dt>Altera…</dt><dd>Esquema <b>conceitual</b></dd><dt>Sem alterar…</dt><dd>Esquemas <b>externos</b> e <b>programas de aplicação</b></dd><dt>Mapeamento</dt><dd>Externo/conceitual</dd><dt>Motivos da alteração</dt><dd>Novas restrições; incluir ou remover itens de dados</dd><dt>Dificuldade</dt><dd>Mais difícil</dd></dl></div><div class="card"><h5>Física</h5><dl><dt>Altera…</dt><dd>Esquema <b>interno</b></dd><dt>Sem alterar…</dt><dd>Esquema <b>conceitual</b> (e, portanto, os externos)</dd><dt>Mapeamento</dt><dd>Conceitual/interno</dd><dt>Motivos da alteração</dt><dd>Nova estrutura de acesso (índice), mudar organização de armazenamento</dd><dt>Dificuldade</dt><dd>Mais fácil</dd></dl></div></div>
+<div class="box red"><h4>Erro seu (Q50, item 53)</h4>"Para definir e manter os dados é necessário o uso de sistemas de aplicação, o que caracteriza a <b>dependência</b> de dados, um fundamento do BD" → <span class="E">ERRADO</span>. O fundamento é a <b>INdependência</b> dados-programa: o catálogo isola a definição dos dados dos programas.</div>
+<ul class="tight">
+<li>Independência de dados ↔ <b>abstração</b> ↔ <b>catálogo</b> (a estrutura fica no catálogo, separada dos programas). Esse é o "isolamento entre programas e dados" de Navathe.</li>
+<li>Q26 <span class="C">C</span>: os dados não dependem do esquema físico e não precisam ser reescritos se ele for alterado.</li>
+<li>Q16 <span class="E">E</span>: alterar o nível interno <b>não</b> exige revisar o conceitual.</li>
+<li>Q43: "modificar a definição de um nível sem afetar o nível superior" = <b>independência de dados</b>.</li>
+<li>Pegadinha clássica: trocar a definição de lógica pela de física (TJ-CE, alternativa E).</li>
+</ul>
+</div></section>
+<section id="sgbd"><div class="n">04</div><div>
+<h2>Dado, BD, SGBD e SBD</h2>
+<span class="inc hi">Alta incidência · base de muitas questões C/E</span>
+<div class="cards"><div class="card"><h5>Dado</h5><dl><dt>Definição para a prova</dt><dd>Fato registrado, bruto, sem contexto</dd><dt>Lembrete</dt><dd>Dado ≠ informação (a informação tem contexto e significado)</dd></dl></div><div class="card"><h5>Banco de dados (BD)</h5><dl><dt>Definição para a prova</dt><dd><b>Coleção de dados relacionados</b> (logicamente coerente)</dd><dt>Lembrete</dt><dd>Não precisa ser digital: uma agenda de papel ou uma planilha é um BD</dd></dl></div><div class="card"><h5>SGBD</h5><dl><dt>Definição para a prova</dt><dd><b>Conjunto de programas</b> para armazenar, modificar e extrair dados</dd><dt>Lembrete</dt><dd>Objetivo: armazenar e recuperar de forma <mark>conveniente e eficiente</mark></dd></dl></div><div class="card"><h5>SBD</h5><dl><dt>Definição para a prova</dt><dd>BD + SGBD (+ aplicações). Date: "sistema computadorizado de manutenção de registros"</dd><dt>Lembrete</dt><dd>Os usuários interagem com o SBD</dd></dl></div></div>
+<p class="formula">SBD = BD + SGBD + aplicações</p>
+<div class="grid2">
+<div class="box"><h4>Navathe: 3 propriedades implícitas do BD</h4><ol class="tight"><li>Representa um aspecto do mundo real: <b>minimundo</b> ou <b>UoD</b> (universo de discurso)</li><li>Coleção <b>logicamente coerente</b>, com significado inerente (dados aleatórios não formam um BD)</li><li>Construído para uma <b>finalidade específica</b>, com usuários e aplicações definidos</li></ol></div>
+<div class="box"><h4>Definições por autor</h4><ul class="tight"><li><b>Date</b>: equivalente eletrônico de um <b>armário de arquivamento</b></li><li><b>Heuser</b>: dados <b>integrados</b> para uma <b>comunidade de usuários</b></li><li><b>Silberschatz</b>: dados estruturados, <b>confiáveis, coerentes e compartilhados</b></li></ul></div>
+</div>
+<h3>Funções do SGBD × funções do sistema operacional</h3>
+<div class="cards"><div class="card"><h5>São do SGBD</h5><div class="solo">Controle de acesso e segurança; integridade; controle de concorrência; transações; backup e recuperação; catálogo; otimização de consultas; DDL/DML; múltiplas visões; transformar e apresentar dados; controle multiusuário; interfaces de comunicação</div></div><div class="card"><h5>NÃO são do SGBD (são do SO)</h5><div class="solo">Escalonamento de processos na CPU; gerenciar o sistema de arquivos; gerenciar E/S de dispositivos; gerenciar a memória do computador</div></div></div>
+<ul class="tight">
+<li>Q24 <span class="C">C</span>: o objetivo do SGBD é <b>retirar da aplicação cliente</b> a responsabilidade de gerenciar acesso, persistência, manipulação e organização.</li>
+<li>Q33 <span class="C">C</span>: o DBA atribui as permissões, mas quem <b>gerencia o acesso</b> é o <b>SGBD</b>.</li>
+<li>Q49 [69] <span class="E">E</span>: os dados físicos <b>não</b> são acessados diretamente sem o SGBD.</li>
+<li>Q36 <span class="E">E</span>: BD "organizado de forma <b>randômica</b>, sem significado implícito" está errado (contraria Navathe).</li>
+<li>Q50 [51] <span class="E">E</span>: o BD trata multimídia sim (tipo <b>BLOB</b>).</li>
+<li>Q7 <span class="C">C</span>: um SGBD <b>multiprocesso</b> atende cada conexão com um processo do SO. No <b>multithreading</b>, são threads dentro do mesmo processo.</li>
+</ul>
+<h3>Navathe: 4 características da abordagem de BD (contra arquivos)</h3>
+<ul class="arrows"><li class="hd"><span>Característica</span><span></span><span>Significa</span></li><li><span class="from">Natureza <b>autodescritiva</b></span><span aria-hidden="true" class="to-a">→</span><span>O BD contém os dados e a sua descrição no <b>catálogo</b> (metadados)</span></li><li><span class="from">Isolamento programas × dados + <b>abstração</b></span><span aria-hidden="true" class="to-a">→</span><span>Gera a <b>independência dados-programa</b></span></li><li><span class="from">Suporte a <b>múltiplas visões</b></span><span aria-hidden="true" class="to-a">→</span><span>Cada usuário vê uma parte; as visões podem ter dados <b>virtuais/derivados</b> (ex.: idade)</span></li><li><span class="from"><b>Compartilhamento</b> + transações <b>multiusuário</b></span><span aria-hidden="true" class="to-a">→</span><span>Exige <b>controle de concorrência</b> e ACID</span></li></ul>
+<div class="grid2">
+<div class="box"><h4>Date: 8 benefícios</h4>Compartilhamento · redução da redundância · evita inconsistência · suporte a transações · integridade · segurança · balanceia requisitos conflitantes · padrões</div>
+<div class="box"><h4>Silberschatz: 7 problemas dos arquivos</h4>Redundância e inconsistência · dificuldade de acesso · isolamento dos dados · integridade · atomicidade · anomalias de acesso concorrente · segurança</div>
+</div>
+<h3>Classificação dos SGBDs</h3>
+<ul class="arrows"><li class="hd"><span>Critério</span><span></span><span>Tipos</span></li><li><span class="from">Modelo de dados</span><span aria-hidden="true" class="to-a">→</span><span>Hierárquico, rede, relacional, OO, objeto-relacional, NoSQL</span></li><li><span class="from">Nº de usuários</span><span aria-hidden="true" class="to-a">→</span><span>Monousuário (PCs) × <b>multiusuário</b> (a maioria)</span></li><li><span class="from">Nº de locais</span><span aria-hidden="true" class="to-a">→</span><span><b>Centralizado</b> (tudo num computador, mesmo com vários usuários) × <b>distribuído</b> (SGBDD)</span></li><li><span class="from">Software nos locais (SGBDD)</span><span aria-hidden="true" class="to-a">→</span><span><b>Homogêneo</b> (mesmo SGBD) × <b>heterogêneo</b></span></li><li><span class="from">Custo</span><span aria-hidden="true" class="to-a">→</span><span>Pago/código fechado × gratuito/código aberto</span></li></ul>
+</div></section>
+<section id="ad-dba"><div class="n">05</div><div>
+<h2>Administrador de dados (AD) × DBA</h2>
+<span class="inc hi">Alta incidência · erro seu na Q54</span>
+<div class="cards"><div class="card"><h5>AD (administrador de dados)</h5><dl><dt>Natureza</dt><dd><b>Estratégico/gerencial</b>: decisões e <b>normas</b> sobre os dados</dd><dt>Quando atua</dt><dd>Principalmente <b>antes</b> da implementação</dd><dt>Outro nome</dt><dd><b>Projetista de dados</b></dd><dt>Recurso</dt><dd>Os dados da empresa, visão <b>corporativa</b></dd><dt>Atribuições</dt><dd>Identificar quais dados guardar; falar com os usuários; definir visões; <b>padronizar nomes</b> e documentar definições; regras de integridade; controlar redundância; modelos corporativos; dados mestres</dd></dl></div><div class="card"><h5>DBA (administrador de banco de dados)</h5><dl><dt>Natureza</dt><dd><b>Técnico</b>: controle geral do sistema</dd><dt>Quando atua</dt><dd>Na implementação e na <b>operação diária</b></dd><dt>Outro nome</dt><dd>Database Administrator</dd><dt>Recurso</dt><dd>Primário: o <b>BD</b>; secundários: SGBD e softwares</dd><dt>Atribuições</dt><dd>Autorizar acesso; coordenar e <b>monitorar o uso</b>; adquirir hardware e software; resolver falhas de segurança e lentidão; <b>tuning</b>; <b>espaço em disco</b>; backup</dd></dl></div></div>
+<div class="box"><h4>Lista do DBA segundo Date</h4>Definir esquema <b>conceitual</b> · definir esquema <b>interno</b> · contato com usuários · restrições de segurança e integridade · monitorar desempenho e responder a mudanças · normas de <b>descarga e recarga</b> (dumping = backup)</div>
+<div class="box red"><h4>Erro seu (Q54)</h4><ul>
+<li>[58] "O DBA <b>não deve</b> gerenciar o espaço em disco…" → <span class="E">E</span>. Monitorar o crescimento e alocar espaço faz parte da disponibilidade, então é tarefa do DBA.</li>
+<li>[59] "A administração de BD abrange a <b>definição e alteração de esquema</b>, importantes para o <b>desempenho</b>" → <span class="C">C</span>. Tuning de esquemas é DBA.</li></ul></div>
+<ul class="tight">
+<li>Q28 (TJ PA 2020): ao responsável pelas <b>decisões estratégicas e normas</b> (= AD) cabe também <b>definir o esquema conceitual</b> (gab. B). Atenção: na lista de Date, "definir o esquema conceitual" aparece com o DBA, mas o CESPE atribuiu ao AD.</li>
+<li>Q18: função do <b>AD</b> = projetar o BD; função do <b>DBA</b> = otimizar o desempenho (gab. A).</li>
+<li>Q55 <span class="C">C</span>: o AD padroniza os dados e documenta definições e descrições.</li>
+<li>Q49 [70] <span class="C">C</span>: o DBA define a estratégia de backup.</li>
+<li>Papel com <b>responsabilidade central pelos dados</b> nos altos níveis da organização = <b>administração de dados</b>.</li>
+</ul>
+</div></section>
+<section id="acid"><div class="n">06</div><div>
+<h2>Transações e ACID</h2>
+<span class="inc">Incidência média · 2 erros seus (Q6 e Q29)</span>
+<p><b>Transação</b> = <mark>unidade lógica de trabalho</mark>. Termina com <b>COMMIT</b> (confirma) ou <b>ROLLBACK</b> (desfaz). Exemplo: uma transferência = debita a origem + credita o destino.</p>
+<div class="cards"><div class="card"><h5>A</h5><dl><dt>Propriedade</dt><dd><b>Atomicidade</b></dd><dt>Garante</dt><dd>Tudo ou nada; se falhar, desfaz tudo "como se nunca tivesse sido executada"</dd><dt>Palavra-gatilho</dt><dd>indivisível, desfeito, estado inicial</dd></dl></div><div class="card"><h5>C</h5><dl><dt>Propriedade</dt><dd><b>Consistência</b></dd><dt>Garante</dt><dd>Leva o BD de um estado válido a <b>outro estado válido</b>, respeitando as restrições</dd><dt>Palavra-gatilho</dt><dd>estado consistente, regras</dd></dl></div><div class="card"><h5>I</h5><dl><dt>Propriedade</dt><dd><b>Isolamento</b></dd><dt>Garante</dt><dd>Uma transação não vê a outra até concluir; parece estar sozinha</dd><dt>Palavra-gatilho</dt><dd>concorrentes, interferência</dd></dl></div><div class="card"><h5>D</h5><dl><dt>Propriedade</dt><dd><b>Durabilidade</b></dd><dt>Garante</dt><dd>Após o commit, os efeitos <b>persistem mesmo com falhas</b></dd><dt>Palavra-gatilho</dt><dd>persistem, confirmada, falha</dd></dl></div></div>
+<div class="box red"><h4>Seus erros neste tema</h4><ul>
+<li><b>Q6</b>: "<b>Autenticidade</b>, consistência, isolamento e durabilidade" → <span class="E">E</span>. O A é de <b>Atomicidade</b>. Leia cada palavra da sigla.</li>
+<li><b>Q29</b>: o funcionamento do BD baseia-se em unidades lógicas de trabalho = <b>transações</b>. Não são tabelas (tabela é estrutura; registro/ocorrência é linha; entidade é do MER).</li></ul></div>
+<ul class="arrows"><li class="hd"><span>Troca falsa comum</span><span></span><span>Correto</span></li><li><span class="from">Autenticidade · Assincronia · Amorfabilidade · Automação</span><span aria-hidden="true" class="to-a">→</span><span><b>Atomicidade</b></span></li><li><span class="from">Concorrência · Conformidade · Confidencialidade · Coesão</span><span aria-hidden="true" class="to-a">→</span><span><b>Consistência</b></span></li><li><span class="from">Integridade · Independência</span><span aria-hidden="true" class="to-a">→</span><span><b>Isolamento</b></span></li><li><span class="from">Distributividade · Distribuição</span><span aria-hidden="true" class="to-a">→</span><span><b>Durabilidade</b></span></li></ul>
+<ul class="tight">
+<li>Q20: completada com sucesso e as mudanças <b>persistem mesmo com falhas</b> → <b>durabilidade</b>.</li>
+<li>Q8 <span class="C">C</span>: a atomicidade é chave para manter os dados precisos e em conformidade com as regras (gabarito Certo).</li>
+<li>Consistência <b>não</b> é "manter o mesmo dado em vários arquivos" (TCE-PB, alt. C).</li>
+<li>Controle de concorrência: vários podem <b>ler</b>, mas só um <b>escreve</b> o mesmo dado de cada vez ("só existe uma caneta").</li>
+<li>NoSQL usa <b>BASE</b>: Basically Available, Soft state, Eventually consistent.</li>
+</ul>
+</div></section>
+<section id="redund"><div class="n">07</div><div>
+<h2>Redundância e integridade</h2>
+<span class="inc hi">Pouca incidência, mas foram 2 erros seus (Q2 e Q30)</span>
+<div class="cards"><div class="card"><h5>Redundância <b>controlada</b></h5><dl><dt>Quem sincroniza as cópias</dt><dd>O <b>software</b> sabe das múltiplas representações e garante o sincronismo</dd><dt>Onde aparece</dt><dd>SGBD; às vezes de propósito, para desempenho</dd></dl></div><div class="card"><h5>Redundância <b>não controlada</b></h5><dl><dt>Quem sincroniza as cópias</dt><dd>O <b>usuário</b> é responsável</dd><dt>Onde aparece</dt><dd>Sistemas de arquivos, cópias de planilhas</dd></dl></div></div>
+<div class="box red"><h4>As duas questões que você errou, lado a lado</h4>
+<ul class="verdicts"><li><span class="badge C">Certo</span><span><b>Q30</b>: o SGBD realiza o <b>controle da redundância</b>, o que <b>impede inconsistências</b> entre os arquivos</span></li><li><span class="badge E">Errado</span><span><b>Q2</b>: o SGBD resolve problemas de <b>integridade</b> para evitar que a mesma informação fique <b>duplicada</b> em vários locais</span></li></ul>
+<b>Regra:</b> controlar a <b>redundância</b> evita <b>inconsistência</b>. <b>Integridade</b> é consistência e precisão garantidas por <b>restrições</b> (PK, FK, UNIQUE, NOT NULL) definidas pelo projetista; o objetivo dela não é evitar duplicação. Não troque um conceito pelo outro.</div>
+<ul class="tight">
+<li>Q40 <span class="E">E</span>: "evitar a redundância controlada… cada informação armazenada <b>uma única vez</b>". A redundância controlada pode existir.</li>
+<li>Q38 <span class="E">E</span>: redundância "controlada pelo <b>usuário</b>" não é controlada.</li>
+<li>Q50 [52] <span class="E">E</span>: arquivos <b>não</b> têm "inter-relacionamento sem redundância". Essa é justamente a diferença deles para o BD.</li>
+<li>Duas motos com a mesma placa → problema de <b>redundância</b>.</li>
+</ul>
+</div></section>
+<section id="historia"><div class="n">08</div><div>
+<h2>Hierárquico, rede, relacional, OO e NoSQL</h2>
+<span class="inc">Incidência média · erro seu na Q22</span>
+<div class="cards"><div class="card"><h5>Hierárquico</h5><dl><dt>Estrutura</dt><dd><b>Árvore</b>; pai = registro <b>proprietário</b>, filho = <b>membro</b>; navega da raiz às folhas por ponteiros</dd><dt>Cardinalidade</dt><dd><b>1:N</b>; cada filho tem <b>um único pai</b>; a raiz não é filha de ninguém</dd><dt>Marco</dt><dd><b>IMS (IBM)</b>, 1º sucesso comercial (IBM + Rockwell)</dd><dt>Exemplos</dt><dd>IMS, System 2K, TDMS</dd></dl></div><div class="card"><h5>Rede</h5><dl><dt>Estrutura</dt><dd><b>Grafo</b>; proprietário/membro ligados por um <b>Set</b> (conector)</dd><dt>Cardinalidade</dt><dd>Suporta <b>N:N</b></dd><dt>Marco</dt><dd><b>IDS</b>, Charles <b>Bachman</b>, Honeywell, <b>1964</b> (1º SGBD)</dd><dt>Exemplos</dt><dd>IDMS, DMS 1100, IMAGE</dd></dl></div><div class="card"><h5>Relacional</h5><dl><dt>Estrutura</dt><dd><b>Relações</b> (tabelas): tuplas (linhas), atributos (colunas), <b>domínio</b></dd><dt>Cardinalidade</dt><dd>N:N fácil (via chaves)</dd><dt>Marco</dt><dd><b>Codd, 1970</b>, IBM; <b>System R</b> → SQL/DS → <b>DB2</b>; SEQUEL → SQL (padrão ISO)</dd><dt>Exemplos</dt><dd>Oracle, SQL Server, DB2, PostgreSQL, MySQL</dd></dl></div><div class="card"><h5>Orientado a objetos</h5><dl><dt>Estrutura</dt><dd>Objetos com métodos próprios de acesso</dd><dt>Cardinalidade</dt><dd>—</dd><dt>Marco</dt><dd>Anos 80/90 (multimídia, medicina, física); 1º SGBDOO: Objectivity</dd><dt>Exemplos</dt><dd>Versant, ObjectStore, db4o</dd></dl></div><div class="card"><h5>NoSQL</h5><dl><dt>Estrutura</dt><dd>Chave-valor, documento, colunar, grafo</dd><dt>Cardinalidade</dt><dd>—</dd><dt>Marco</dt><dd><b>2009</b>; "<b>Not Only SQL</b>"; Big Data; BASE</dd><dt>Exemplos</dt><dd>MongoDB, Redis, Cassandra, HBase, Neo4j</dd></dl></div></div>
+<div class="box red"><h4>Erro seu (Q22)</h4>"Nos BDs hierárquicos, cada registro é uma <b>coleção de atributos</b>, e a associação entre dois registros se chama <b>ligação</b>" → <span class="C">CERTO</span>. Registro = coleção de atributos; associação = <b>ligação (link) pai-filho</b>. Q35 <span class="C">C</span>: hierarquia ou árvore cujos nós contêm ocorrências de registros.</div>
+<div class="grid2">
+<div class="box"><h4>Problemas dos modelos hierárquico e de rede</h4><ul class="tight"><li>Ponteiros de baixo nível</li><li>Armazenamento dependente do tipo de dado</li><li>Adicionar um campo exige reescrever o esquema físico</li><li>O usuário precisa conhecer a estrutura física</li></ul></div>
+<div class="box"><h4>Os 4 tipos de NoSQL</h4><ul class="tight"><li><b>Chave-valor</b>: hash distribuído (Redis, DynamoDB)</li><li><b>Documento</b>: sem esquema, bom para semiestruturado (MongoDB)</li><li><b>Colunar</b>: grava por coluna, bom para OLAP (HBase, BigTable)</li><li><b>Grafo</b>: nós, arestas e propriedades (Neo4j)</li></ul></div>
+</div>
+<ul class="tight">
+<li>NoSQL <b>não</b> quer substituir o relacional; quer acabar com a ideia de "bala de prata".</li>
+<li>Big Data = 5 Vs: <b>volume, variedade, velocidade, veracidade, valor</b>. Hadoop/MapReduce para processar.</li>
+<li>Escalabilidade: <b>horizontal</b> = mais máquinas (sharding, motivo do NoSQL) × <b>vertical</b> = máquina mais potente.</li>
+<li><span class="E">E</span>: "NoSQL usa modelos de armazenamento <b>totalmente distintos</b> dos relacionais".</li>
+</ul>
+</div></section>
+<section id="meta"><div class="n">09</div><div>
+<h2>Metadados, catálogo e dicionário de dados</h2>
+<span class="inc">Incidência média-baixa</span>
+<p><b>Metadados = dados sobre dados.</b> Ficam no <b>catálogo</b> ou <b>dicionário de dados</b> do SGBD: tabelas, colunas, tipos, tamanhos, NULL/NOT NULL, defaults, PK/FK, índices, restrições, permissões. Essa é a <b>natureza autodescritiva</b> do BD.</p>
+<div class="cards"><div class="card"><h5>Governança</h5><dl><dt>Tipo</dt><dd><b>Técnicos</b></dd><dt>Captura</dt><dd>Forma e estrutura: esquema, tipos, tamanho, nulidade</dd></dl></div><div class="card"><h5>Governança</h5><dl><dt>Tipo</dt><dd><b>Operacionais</b></dd><dt>Captura</dt><dd>Linhagem, qualidade, proveniência, frequência de atualização, registros rejeitados</dd></dl></div><div class="card"><h5>Governança</h5><dl><dt>Tipo</dt><dd><b>Comerciais</b></dd><dt>Captura</dt><dd>Significado para o negócio: nomes, descrições, tags, glossário</dd></dl></div><div class="card"><h5>Vunesp</h5><dl><dt>Tipo</dt><dd><b>Descritivos</b></dd><dt>Captura</dt><dd><b>Recuperação e identificação</b> dos dados</dd></dl></div><div class="card"><h5>Vunesp</h5><dl><dt>Tipo</dt><dd><b>Estruturais</b></dd><dt>Captura</dt><dd>Como reconstituir um dado formado por vários componentes</dd></dl></div><div class="card"><h5>Vunesp</h5><dl><dt>Tipo</dt><dd><b>Administrativos</b></dd><dt>Captura</dt><dd>Ciclo de vida, gestão e direitos</dd></dl></div></div>
+<p><b>Funções no SGBD:</b> descrever a estrutura · controle de acesso · <b>otimização de consultas</b> (estatísticas) · recuperação de informação · manutenção e administração.</p>
+<ul class="tight">
+<li>Q12 <span class="C">C</span>: os metadados dão uma <b>visão integrada</b>, pois explicitam os inter-relacionamentos.</li>
+<li>Q39 <span class="C">C</span>: o catálogo guarda a estrutura, o tipo e o formato de cada item e as restrições.</li>
+<li>Q56 [1] <span class="E">E</span>: o dicionário de dados <b>não</b> é subconjunto do catálogo. [2] <span class="C">C</span>: o catálogo armazena as definições dos esquemas.</li>
+<li>A informação do catálogo se chama <b>metadados</b>, e não "metamodelo".</li>
+<li>Os metadados <b>não</b> guardam o histórico de inserções e exclusões (isso é log) e são necessários mesmo em BDs pequenos.</li>
+</ul>
+</div></section>
+<section id="ambiente"><div class="n">10</div><div>
+<h2>Ambiente do sistema de banco de dados</h2>
+<span class="inc">Pouca incidência · leitura rápida</span>
+<div class="cards"><div class="card"><h5>DBA</h5><dl><dt>Interage por</dt><dd>Comandos <b>DDL</b> e comandos privilegiados (tuning, REORG)</dd><dt>Caminho no SGBD</dt><dd>Compilador DDL → grava os metadados no <b>catálogo</b></dd></dl></div><div class="card"><h5>Usuário casual</h5><dl><dt>Interage por</dt><dd>Consultas interativas</dd><dt>Caminho no SGBD</dt><dd>Compilador de consultas → <b>otimizador</b> (usa as estatísticas do catálogo) → código executável</dd></dl></div><div class="card"><h5>Programador</h5><dl><dt>Interage por</dt><dd>Linguagem <b>hospedeira</b> (Java, C#) com SQL embutido</dd><dt>Caminho no SGBD</dt><dd><b>Pré-compilador</b> separa a DML → compilador DML + compilador da linguagem → transação compilada</dd></dl></div><div class="card"><h5>Usuário paramétrico</h5><dl><dt>Interage por</dt><dd>Só fornece <b>parâmetros</b> (ex.: caixa eletrônico)</dd><dt>Caminho no SGBD</dt><dd>Executa as transações programadas</dd></dl></div></div>
+<div class="grid2">
+<div class="box"><h4>Componentes internos</h4><ul class="tight"><li><b>Processador em tempo de execução</b>: executa comandos privilegiados, planos e transações</li><li><b>Gerenciador de dados armazenados</b>: E/S de baixo nível usando o SO</li><li><b>Gerenciador de buffer</b>: troca entre memória e disco (o gargalo)</li><li>Controle de concorrência, backup e recuperação</li></ul></div>
+<div class="box"><h4>Linguagens</h4><ul class="tight"><li><b>DDL</b>: cria objetos (estrutura)</li><li><b>DML</b>: recupera, insere, remove, altera</li><li><b>DCL</b>: privilégios (GRANT/REVOKE)</li><li>Transações: COMMIT, ROLLBACK, SAVEPOINT</li><li><b>SDL</b>: define o nível <b>interno</b> (armazenamento), e não o conceitual</li></ul></div>
+</div>
+</div></section>
+<section id="pegadinhas"><div class="n">C/E</div><div>
+<h2>Treino final: itens CESPE da lista</h2>
+<span class="inc hi">Responda de cabeça e clique para ver o gabarito</span>
+<div id="flash"></div>
+</div></section>
+</main>
+<div class="wrap"><footer>Montado a partir da Aula 00 do Estratégia Concursos (BACEN · Banco de Dados e Ciência de Dados) e das suas marcações na lista CEBRASPE (p. 141–153). Gabaritos conforme a p. 154.</footer></div>
+<script>
+{
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const erros=[
+ {q:'Q2',x:1,src:'MPU-TO · DBA · 2024',stmt:'O SGBD resolve problemas de integridade para evitar que a mesma informação esteja duplicada em vários locais.',you:'Certo',gab:'Errado',rule:'Integridade = consistência/precisão via restrições. Evitar duplicação = controle de redundância.',to:'#redund'},
+ {q:'Q6',x:1,src:'MPU-TO · DBA · 2024',stmt:'Autenticidade, consistência, isolamento e durabilidade garantem confiabilidade às transações.',you:'Certo',gab:'Errado',rule:'ACID: o A é Atomicidade, não Autenticidade.',to:'#acid'},
+ {q:'Q22',x:1,src:'FUB · Técnico TI · 2022',stmt:'Nos BDs hierárquicos, cada registro é uma coleção de atributos, e a associação entre dois registros é denominada ligação.',you:'Errado',gab:'Certo',rule:'Hierárquico: registro = coleção de atributos; associação = ligação pai-filho (1:N).',to:'#historia'},
+ {q:'Q30',x:1,src:'TJ AM · Assistente · 2019',stmt:'O SGBD realiza o controle da redundância de dados, o que impede inconsistências entre os arquivos.',you:'Errado',gab:'Certo',rule:'Controlar a redundância evita inconsistência. Ela pode existir, desde que controlada pelo SGBD.',to:'#redund'},
+ {q:'Q50',x:1,src:'MC · Analista TI · 2013',stmt:'Item [53]: para definir e manter os dados é necessário usar sistemas de aplicação, o que caracteriza a dependência de dados, um fundamento do BD.',you:'Certo',gab:'Errado (E; E; E)',rule:'O fundamento é a INdependência dados-programa.',to:'#indep'},
+ {q:'Q54',x:1,src:'MC · Analista TI · 2013',stmt:'Item [59]: a administração de BD abrange a definição e a alteração de esquema, tarefas importantes para melhorar o desempenho.',you:'Errado',gab:'Certo (E; C)',rule:'Tuning e alteração de esquema são do DBA, assim como o espaço em disco.',to:'#ad-dba'},
+ {q:'Q1',x:0,src:'MPU-TO · DBA · 2024',stmt:'Um caso típico de fragmentação em vários BDs é o particionamento de registros de diferentes usuários em uma coleção de BDs.',you:'Errado',gab:'Certo',rule:'Distribuir registros por critério (ex.: usuário) entre bancos = fragmentação.',to:'#sgbd'},
+ {q:'Q13',x:0,src:'CNMP · Analista · 2023',stmt:'As estruturas de armazenamento e os métodos de acesso fazem parte do projeto lógico.',you:'Certo',gab:'Errado',rule:'Armazenamento e métodos de acesso = projeto FÍSICO.',to:'#modelos'},
+ {q:'Q17',x:0,src:'Pref. Fortaleza · AFM · 2023',stmt:'O modelo conceitual usa requisitos de negócio decompostos em entidades, atributos e relacionamentos atômicos e aplica regras para evitar redundâncias.',you:'Certo',gab:'Errado',rule:'O modelo conceitual parte dos requisitos de DADOS.',to:'#modelos'},
+ {q:'Q21',x:0,src:'POLITEC-RO · Perito · 2022',stmt:'Nível que descreve todo o BD para uma comunidade de usuários (entidades, tipos, relacionamentos, operações, restrições).',you:'C) interno',gab:'D) conceitual',rule:'"Comunidade de usuários" = conceitual. Interno = armazenamento físico.',to:'#ansi'},
+ {q:'Q29',x:0,src:'TJ PA · Analista · 2020',stmt:'O funcionamento do BD baseia-se em unidades lógicas de trabalho conhecidas como…',you:'D) tabelas',gab:'E) transações',rule:'Unidade lógica de trabalho = transação.',to:'#acid'},
+ {q:'Q53',x:0,src:'DEPEN · Agente · 2015',stmt:'Interno → armazenamento físico; externo → como os usuários veem; conceitual → todo o conteúdo de informações do BD.',you:'Errado',gab:'Certo',rule:'A associação está correta: o conceitual representa o BD inteiro.',to:'#ansi'}
+];
+document.getElementById('errlist').innerHTML=erros.map(e=>`<article class="err${e.x?'':' alt'}"><div class="q">${esc(e.q)}${e.x?'':''}</div><div class="src">${esc(e.src)}${e.x?' · marcada com X':' · sem X, mas diverge do gabarito'}</div><div class="stmt">${esc(e.stmt)}</div><div class="res"><span class="you">Você: ${esc(e.you)}</span><span class="gab">Gabarito: ${esc(e.gab)}</span></div><div class="rule">${esc(e.rule)} <a href="${e.to}">ver tema</a></div></article>`).join('');
+
+const inc=[['Modelos de dados (conc./lóg./fís.)',35],['Arquitetura 3 esquemas / níveis',32],['SGBD: funções e características',30],['AD × DBA',23],['ACID / transações',14],['Independência de dados',13],['Hierárquico / rede / NoSQL',12],['Metadados / catálogo',9],['Redundância',6]];
+const mx=inc[0][1];
+document.getElementById('bars').innerHTML=inc.map((r,i)=>`<div class="bar${i<3?' top':''}"><span>${esc(r[0])}</span><span><i style="width:${(r[1]/mx*100).toFixed(1)}%"></i></span><span>${r[1]}</span></div>`).join('');
+
+const fl=[
+ ['O nível conceitual descreve as estruturas de armazenamento físico, incluindo índices.','E','Isso é o nível interno.'],
+ ['Independência lógica: alterar o esquema conceitual sem alterar os esquemas externos ou os programas.','C','Definição de Navathe.'],
+ ['Independência física: alterar o esquema conceitual sem reescrever os programas.','E','Física = alterar o INTERNO sem afetar o conceitual.'],
+ ['O modelo conceitual registra como os dados estão armazenados no SGBD.','E','O conceitual diz QUAIS dados, sem considerar a implementação (Q41).'],
+ ['Em um projeto de BD, a modelagem conceitual define quais dados vão aparecer, sem considerar a implementação.','C','Q48.'],
+ ['A modelagem lógica considera aspectos de implementação como desempenho.','E','Desempenho é do físico (Q14).'],
+ ['O modelo relacional não separa as estruturas físicas das lógicas.','E','Codd abstraiu justamente a representação física (Q19).'],
+ ['Os modelos usados por programadores são menos abstratos que os usados por usuários leigos.','C','Têm mais detalhes de organização interna (Q34).'],
+ ['O modelo de dados físico, criado na coleta de requisitos, dá uma visão geral do sistema e das regras de negócio.','E','Isso é o conceitual (Q3).'],
+ ['O particionamento garante a disponibilidade do BD.','E','Ele ajuda no desempenho e na gestão, mas não garante disponibilidade (Q15).'],
+ ['Para garantir a segurança, o sistema deve ser rígido, com regras fixas sem espaço para alteração.','E','Q11.'],
+ ['Um registro é um conjunto de itens de dados com atributos de uma entidade.','C','Q10.'],
+ ['Os dados de um SGBD são acessados por um único usuário de cada vez.','E','O SGBD é multiusuário, com controle de concorrência (Q52).'],
+ ['O SGBD oferece uma visão abstrata dos dados, sem expor detalhes de armazenamento: a independência de dados.','C','Q52 [116].'],
+ ['Um SGBD deve gerenciar o acesso múltiplo sem perda de integridade.','C','Q51.'],
+ ['Na ANSI/SPARC, o nível interno trata do armazenamento físico, o externo das visões individuais e o conceitual da visão comunitária.','C','Q32.'],
+ ['Desenvolvimento começa pela modelagem conceitual, feita pelo gestor de dados de negócio ou sob sua supervisão.','C','Q25.'],
+ ['No nível conceitual, cada esquema externo descreve a parte que interessa a um grupo.','E','Mistura de níveis: isso é o externo (Q46).']
+];
+document.getElementById('flash').innerHTML=fl.map(f=>`<details><summary>${esc(f[0])}</summary><p><span class="${f[1]}">${f[1]==='C'?'CERTO':'ERRADO'}</span> · ${esc(f[2])}</p></details>`).join('');
+}
+</script>
+<script>{document.addEventListener("click",e=>{const a=e.target.closest('a[href^="#"]');if(!a)return;const id=decodeURIComponent(a.getAttribute("href").slice(1));const t=id&&document.getElementById(id);if(!t)return;e.preventDefault();t.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});try{history.replaceState(null,"","#"+id)}catch(_){}})}</script>
+<script>try{if(window.top===window.self)document.getElementById("siteBack").hidden=false}catch(e){}</script>
+</body>
+</html>

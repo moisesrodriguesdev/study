@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Apostilas de revisão</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f1f5f9;--card:#fff;--ink:#475569;--head:#334155;--mut:#94a3b8;--line:#e2e8f0;
+--green:#dcfce7;--green-b:#bbf7d0;--green-t:#15803d;--yellow:#fef9c3;--yellow-b:#fde68a;--yellow-t:#a16207;
+--blue:#e0f2fe;--blue-b:#bae6fd;--blue-t:#0369a1;--shadow:0 1px 2px rgba(15,23,42,.04),0 4px 14px rgba(15,23,42,.05)}
+*{box-sizing:border-box;min-width:0}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:300 16px/1.6 Inter,ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
+b{font-weight:600;color:var(--head)}
+a{color:inherit}
+.wrap{width:100%;max-width:1100px;margin:0 auto;padding:0 max(4vw,16px)}
+
+/* barra superior */
+.top{background:rgba(255,255,255,.85);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+.top .wrap{display:flex;align-items:center;gap:14px;min-height:60px;flex-wrap:wrap;padding-block:8px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--head);font-weight:500;flex:none}
+.brand svg{width:26px;height:26px}
+.crumbs{display:flex;flex-wrap:wrap;align-items:center;gap:4px;font-size:14px;flex:1}
+.crumbs a,.crumbs span{padding:4px 10px;border-radius:999px;text-decoration:none;overflow-wrap:anywhere}
+.crumbs a{color:var(--blue-t)}
+.crumbs a:hover,.crumbs a:focus-visible{background:var(--blue);outline:none}
+.crumbs span.cur{color:var(--head);font-weight:500}
+.crumbs i{font-style:normal;color:var(--mut)}
+.search{flex:0 1 260px}
+.search input{width:100%;font:inherit;font-size:16px;padding:8px 14px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--head)}
+.search input:focus{outline:2px solid var(--blue-b);border-color:var(--blue-b)}
+
+/* conteúdo */
+main{flex:1;display:flex;flex-direction:column}
+.page{padding-top:34px;padding-bottom:60px}
+h1{font-weight:300;font-size:clamp(26px,4vw,38px);letter-spacing:-.02em;color:var(--head);margin:0 0 4px;line-height:1.15}
+.sub{margin:0 0 24px;color:var(--ink)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,230px),1fr));gap:14px}
+.item{display:flex;flex-direction:column;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;text-decoration:none;box-shadow:var(--shadow);transition:transform .15s,border-color .15s;overflow-wrap:anywhere}
+.item:hover,.item:focus-visible{border-color:var(--blue-b);transform:translateY(-2px);outline:none}
+@media(prefers-reduced-motion:reduce){.item{transition:none}.item:hover{transform:none}}
+.item svg{width:44px;height:44px;flex:none}
+.item .nm{font-weight:500;color:var(--head);font-size:16px;line-height:1.3}
+.item .ds{font-size:14px;color:var(--ink)}
+.item .meta{font-size:13px;color:var(--mut);margin-top:auto}
+.list{display:grid;gap:10px}
+.row{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 18px;text-decoration:none;box-shadow:var(--shadow);overflow-wrap:anywhere}
+.row:hover,.row:focus-visible{border-color:var(--green-b);background:#fcfffd;outline:none}
+.row svg{width:34px;height:34px;flex:none}
+.row .tx{flex:1;display:flex;flex-direction:column}
+.row .nm{font-weight:500;color:var(--head)}
+.row .ds{font-size:14px}
+.row .go{color:var(--green-t);font-size:14px;font-weight:500;flex:none}
+.row .path{font-size:12px;color:var(--mut)}
+.empty{background:var(--card);border:1px dashed var(--line);border-radius:14px;padding:22px;color:var(--mut)}
+
+/* leitor */
+.viewer{flex:1;display:flex;flex-direction:column}
+.vbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 0}
+.vbar .t{flex:1;font-weight:500;color:var(--head)}
+.btn{font:inherit;font-size:14px;text-decoration:none;padding:7px 14px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;white-space:nowrap}
+.btn:hover,.btn:focus-visible{background:var(--blue);border-color:var(--blue-b);color:var(--blue-t);outline:none}
+.btn.pri{background:var(--green);border-color:var(--green-b);color:var(--green-t)}
+.frame{flex:1;min-height:calc(100vh - 140px);border:1px solid var(--line);border-radius:14px 14px 0 0;background:var(--card);overflow:hidden;box-shadow:var(--shadow)}
+.frame iframe{display:block;width:100%;height:100%;min-height:calc(100vh - 140px);border:0}
+footer{font-size:13px;color:var(--mut);padding:18px 0 28px}
+
+/* toque e celular */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{-webkit-tap-highlight-color:rgba(3,105,161,.12)}
+.brand{min-height:44px}
+.crumbs a,.crumbs span{min-height:40px;display:inline-flex;align-items:center}
+.btn{min-height:44px;display:inline-flex;align-items:center;gap:6px}
+@media(max-width:760px){
+ .top .wrap{gap:4px 10px}
+ .crumbs{order:3;flex:1 1 100%;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 -6px}
+ .crumbs::-webkit-scrollbar{display:none}
+ .crumbs a,.crumbs span,.crumbs i{flex:none;white-space:nowrap}
+ .search{flex:1 1 140px}
+ .page{padding-top:22px;padding-bottom:40px}
+}
+/* modo leitura: a apostila ocupa a tela toda */
+body.reading{height:100vh;height:100dvh;overflow:hidden}
+body.reading main{min-height:0}
+body.reading .viewer{min-height:0}
+body.reading .frame{flex:1;min-height:0}
+body.reading .frame iframe{height:100%;min-height:0}
+@media(max-width:900px),(max-height:500px){
+ body.reading .top{display:none}
+ body.reading .viewer{padding:0}
+ body.reading .vbar{padding:6px 10px;gap:8px;flex-wrap:nowrap;background:rgba(255,255,255,.9);border-bottom:1px solid var(--line)}
+ body.reading .vbar .t{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:14px}
+ body.reading .frame{border:0;border-radius:0;box-shadow:none}
+ .hide-sm{display:none}
+}
+@media(max-height:500px){body.reading .vbar{padding:4px 10px}body.reading .btn{min-height:40px}}
+</style>
+</head>
+<body>
+<div class="top"><div class="wrap">
+  <a class="brand" href="#/" aria-label="Início">
+    <svg viewBox="0 0 32 32" aria-hidden="true"><rect x="3" y="7" width="26" height="20" rx="4" fill="#bae6fd"/><path d="M3 11a4 4 0 0 1 4-4h6l3 3h9a4 4 0 0 1 4 4v1H3z" fill="#7dd3fc"/><rect x="9" y="15" width="14" height="2" rx="1" fill="#0369a1" opacity=".5"/><rect x="9" y="19" width="9" height="2" rx="1" fill="#0369a1" opacity=".35"/></svg>
+    Apostilas
+  </a>
+  <nav class="crumbs" id="crumbs" aria-label="Caminho"></nav>
+  <label class="search"><input id="q" type="search" placeholder="Buscar aula ou tema…" aria-label="Buscar aula ou tema" autocomplete="off"></label>
+</div></div>
+
+<main id="app"></main>
+
+<script src="catalogo.js"></script>
+<script>
+{
+const C=window.CATALOGO||[];
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const app=document.getElementById('app'),crumbs=document.getElementById('crumbs'),q=document.getElementById('q');
+
+const folder=(c1,c2)=>`<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M4 14a5 5 0 0 1 5-5h10l4 4h16a5 5 0 0 1 5 5v19a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z" fill="${c1}"/><path d="M4 19a4 4 0 0 1 4-4h32a4 4 0 0 1 4 4v18a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z" fill="${c2}"/></svg>`;
+const fileIco=`<svg viewBox="0 0 40 40" aria-hidden="true"><path d="M10 4h14l8 8v22a3 3 0 0 1-3 3H10a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3z" fill="#dcfce7"/><path d="M24 4v6a2 2 0 0 0 2 2h6z" fill="#bbf7d0"/><rect x="12" y="18" width="14" height="2" rx="1" fill="#15803d" opacity=".5"/><rect x="12" y="23" width="14" height="2" rx="1" fill="#15803d" opacity=".4"/><rect x="12" y="28" width="9" height="2" rx="1" fill="#15803d" opacity=".3"/></svg>`;
+const nAulas=c=>c.disciplinas.reduce((s,d)=>s+d.aulas.length,0);
+const plural=(n,a,b)=>`${n} ${n===1?a:b}`;
+
+function setCrumbs(parts){
+  crumbs.innerHTML=parts.map((p,i)=>i===parts.length-1
+    ?`<span class="cur" aria-current="page">${esc(p.t)}</span>`
+    :`<a href="${p.h}">${esc(p.t)}</a><i aria-hidden="true">/</i>`).join('');
+}
+
+function home(){
+  setCrumbs([{t:'Início',h:'#/'}]);
+  document.title='Apostilas de revisão';
+  app.innerHTML=`<div class="wrap page"><h1>Concursos</h1><p class="sub">Escolha um concurso para ver as disciplinas e as aulas.</p>
+  <div class="grid">${C.map(c=>`<a class="item" href="#/${esc(c.id)}">${folder('#bae6fd','#e0f2fe')}<span class="nm">${esc(c.nome)}</span>${c.descricao?`<span class="ds">${esc(c.descricao)}</span>`:''}<span class="meta">${plural(c.disciplinas.length,'disciplina','disciplinas')} · ${plural(nAulas(c),'aula','aulas')}</span></a>`).join('')||'<p class="empty">Nenhum concurso cadastrado em catalogo.js.</p>'}</div></div>`;
+}
+
+function concurso(c){
+  setCrumbs([{t:'Início',h:'#/'},{t:c.nome}]);
+  document.title=c.nome+' · Apostilas';
+  app.innerHTML=`<div class="wrap page"><h1>${esc(c.nome)}</h1><p class="sub">${esc(c.descricao||'Disciplinas')}</p>
+  <div class="grid">${c.disciplinas.map(d=>`<a class="item" href="#/${esc(c.id)}/${esc(d.id)}">${folder('#bbf7d0','#dcfce7')}<span class="nm">${esc(d.nome)}</span><span class="meta">${plural(d.aulas.length,'aula','aulas')}</span></a>`).join('')}</div></div>`;
+}
+
+function disciplina(c,d){
+  setCrumbs([{t:'Início',h:'#/'},{t:c.nome,h:`#/${c.id}`},{t:d.nome}]);
+  document.title=d.nome+' · '+c.nome;
+  app.innerHTML=`<div class="wrap page"><h1>${esc(d.nome)}</h1><p class="sub">${esc(c.nome)} · ${plural(d.aulas.length,'aula','aulas')}</p>
+  <div class="list">${d.aulas.map(a=>`<a class="row" href="#/${esc(c.id)}/${esc(d.id)}/${esc(a.id)}">${fileIco}<span class="tx"><span class="nm">${esc(a.titulo)}</span><span class="ds">${esc(a.tema||'')}</span></span><span class="go">Abrir →</span></a>`).join('')||'<p class="empty">Nenhuma aula ainda.</p>'}</div></div>`;
+}
+
+function aula(c,d,a){
+  setCrumbs([{t:'Início',h:'#/'},{t:c.nome,h:`#/${c.id}`},{t:d.nome,h:`#/${c.id}/${d.id}`},{t:a.titulo}]);
+  document.title=`${a.titulo} · ${d.nome}`;
+  app.innerHTML=`<div class="wrap viewer"><div class="vbar"><a class="btn" href="#/${esc(c.id)}/${esc(d.id)}" aria-label="Voltar para ${esc(d.nome)}">←<span class="hide-sm"> Voltar</span></a><span class="t">${esc(a.titulo)}${a.tema?' · '+esc(a.tema):''}</span><a class="btn pri" href="${esc(a.arquivo)}" target="_blank" rel="noopener" aria-label="Abrir em nova aba">↗<span class="hide-sm"> Abrir em nova aba</span></a></div>
+  <div class="frame"><iframe src="${esc(a.arquivo)}" title="${esc(a.titulo+' · '+d.nome)}"></iframe></div></div>`;
+}
+
+function busca(term){
+  document.body.classList.remove('reading');
+  const t=term.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+  const norm=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+  const res=[];
+  for(const c of C)for(const d of c.disciplinas)for(const a of d.aulas){
+    if([c.nome,d.nome,a.titulo,a.tema,a.tags].some(x=>norm(x).includes(t)))res.push({c,d,a});
+  }
+  setCrumbs([{t:'Início',h:'#/'},{t:'Busca'}]);
+  app.innerHTML=`<div class="wrap page"><h1>Busca</h1><p class="sub">${plural(res.length,'resultado','resultados')} para “${esc(term)}”</p>
+  <div class="list">${res.map(({c,d,a})=>`<a class="row" href="#/${esc(c.id)}/${esc(d.id)}/${esc(a.id)}">${fileIco}<span class="tx"><span class="nm">${esc(a.titulo)} · ${esc(a.tema||'')}</span><span class="path">${esc(c.nome)} / ${esc(d.nome)}</span></span><span class="go">Abrir →</span></a>`).join('')||'<p class="empty">Nada encontrado.</p>'}</div></div>`;
+}
+
+function route(){
+  document.body.classList.remove('reading');
+  const p=decodeURIComponent(location.hash.replace(/^#\/?/,'')).split('/').filter(Boolean);
+  const c=C.find(x=>x.id===p[0]);
+  if(!c)return home();
+  const d=c.disciplinas.find(x=>x.id===p[1]);
+  if(!d)return concurso(c);
+  const a=d.aulas.find(x=>x.id===p[2]);
+  if(!a)return disciplina(c,d);
+  document.body.classList.add('reading');
+  aula(c,d,a);
+}
+window.addEventListener('hashchange',()=>{q.value='';route();window.scrollTo(0,0)});
+app.addEventListener('click',e=>{const a=e.target.closest('a[href^="#/"]');if(a&&a.getAttribute('href')===location.hash&&q.value){e.preventDefault();q.value='';route()}});
+q.addEventListener('input',()=>{const v=q.value.trim();v?busca(v):route()});
+route();
+}
+</script>
+</body>
+</html>

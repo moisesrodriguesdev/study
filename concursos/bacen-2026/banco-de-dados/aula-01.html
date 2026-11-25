@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>Aula 01 · Modelagem ER</title>
+
+
+<style>
+/* VOICE: material de revisão calmo e leve, para ler muitas vezes
+   IDEA: caderno de estudo em fichas: cada conceito é um cartão, cada processo é um fluxo com setas
+   PICTURE: fluxos (passo → passo) e fichas lado a lado, no lugar das tabelas
+   COLOUR and TYPE: fundo cinza claro, cartões brancos, verde claro + amarelo claro + azul claro; Inter 300/400
+   LAYOUT: coluna central de até 1100px, numeral suave à esquerda de cada seção, fichas em grade fluida */
+:root{color-scheme:light;
+ --bg:#f1f5f9;--card:#ffffff;--ink:#475569;--head:#334155;--mut:#94a3b8;--line:#e2e8f0;
+ --green:#dcfce7;--green-b:#bbf7d0;--green-t:#15803d;
+ --yellow:#fef9c3;--yellow-b:#fde68a;--yellow-t:#a16207;
+ --blue:#e0f2fe;--blue-b:#bae6fd;--blue-t:#0369a1;
+ --shadow:0 1px 2px rgba(15,23,42,.04),0 4px 14px rgba(15,23,42,.05)}
+*{box-sizing:border-box;min-width:0}
+html{scroll-padding-top:72px;scroll-behavior:smooth}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--bg);color:var(--ink);font:300 16px/1.65 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;overflow-x:clip;-webkit-font-smoothing:antialiased}
+b,strong{font-weight:600;color:var(--head)}
+.wrap{max-width:1100px;margin:0 auto;padding:0 max(4vw,16px)}
+header{padding:44px 0 22px}
+h1{font-weight:300;font-size:clamp(30px,5vw,44px);line-height:1.12;letter-spacing:-.02em;color:var(--head);margin:0 0 10px;text-wrap:balance}
+.sub{margin:0;max-width:68ch;color:var(--ink)}
+nav{position:sticky;top:0;z-index:5;background:rgba(241,245,249,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+@media(max-width:900px){nav{position:static}}
+.scroll{overflow-x:auto;display:flex;gap:6px;padding:10px 0}
+.scroll a{flex:none;color:var(--ink);text-decoration:none;font-size:14px;font-weight:400;padding:8px 14px;border-radius:999px;background:var(--card);border:1px solid var(--line)}
+.scroll a:hover,.scroll a:focus-visible{background:var(--blue);border-color:var(--blue-b);color:var(--blue-t);outline:none}
+main{padding-bottom:10px}
+section{display:grid;grid-template-columns:72px minmax(0,1fr);gap:0 22px;padding:34px 0;border-top:1px solid var(--line)}
+section>.n{font-weight:300;font-size:40px;line-height:1;color:var(--blue-t);opacity:.55}
+@media(max-width:700px){section{grid-template-columns:minmax(0,1fr)}section>.n{font-size:30px;margin-bottom:8px}}
+h2{font-weight:400;font-size:clamp(22px,3vw,28px);line-height:1.2;letter-spacing:-.01em;color:var(--head);margin:0 0 8px}
+h3{font-weight:500;font-size:17px;color:var(--head);margin:28px 0 10px}
+.inc{display:inline-block;font-size:13px;font-weight:500;background:var(--blue);color:var(--blue-t);padding:3px 12px;border-radius:999px;margin-bottom:14px}
+.inc.hi{background:var(--green);color:var(--green-t)}
+p{max-width:72ch;margin:8px 0}
+mark{background:var(--yellow);color:var(--head);padding:0 4px;border-radius:4px}
+a{color:var(--blue-t)}
+.box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:14px 0;box-shadow:var(--shadow);overflow-wrap:anywhere}
+.box h4{margin:0 0 8px;font-size:15px;font-weight:600;color:var(--head)}
+.box.red{background:#fffdf0;border-color:var(--yellow-b)}
+.box.red h4{color:var(--yellow-t)}
+.box ul,.box ol{margin:6px 0 0;padding-left:20px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+ul.tight{padding-left:20px;margin:8px 0}ul.tight li{margin:4px 0}
+.formula{font-weight:300;font-size:clamp(20px,3vw,26px);color:var(--blue-t);margin:12px 0}
+.C{color:var(--green-t);font-weight:600}.E{color:var(--yellow-t);font-weight:600}
+/* fichas (substituem tabelas) */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:12px;margin:12px 0 18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;box-shadow:var(--shadow);overflow-wrap:anywhere}
+.card h5{margin:0 0 8px;font-size:15px;font-weight:600;color:var(--head);padding-bottom:8px;border-bottom:1px solid var(--line)}
+.card dl{margin:0;display:grid;gap:7px}
+.card dt{font-size:12px;font-weight:500;color:var(--mut);margin:0}
+.card dd{margin:0;font-size:15px}
+.card .solo{font-size:15px}
+/* fluxo */
+.flow{display:flex;align-items:stretch;gap:0;margin:14px 0 20px;flex-wrap:wrap}
+.step{flex:1 1 200px;background:var(--card);border:1px solid var(--line);border-top:4px solid var(--blue-b);border-radius:14px;padding:14px 16px;box-shadow:var(--shadow);overflow-wrap:anywhere}
+.step:nth-of-type(3n+2){border-top-color:var(--green-b)}.step:nth-of-type(3n){border-top-color:var(--yellow-b)}
+.step h5{margin:0 0 8px;font-size:15px;font-weight:600;color:var(--head)}
+.step dl{margin:0;display:grid;gap:6px}.step dt{font-size:12px;font-weight:500;color:var(--mut)}.step dd{margin:0;font-size:14.5px}
+.arrow{flex:0 0 34px;display:flex;align-items:center;justify-content:center;color:var(--blue-t);font-size:22px;opacity:.6}
+@media(max-width:760px){.flow{flex-direction:column}.step{flex:auto}.arrow{flex:0 0 30px;transform:rotate(90deg)}}
+/* setas X → Y */
+.arrows{list-style:none;margin:12px 0 18px;padding:0;display:grid;gap:8px}
+.arrows li{display:grid;grid-template-columns:minmax(0,1fr) 28px minmax(0,1.4fr);align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px;box-shadow:var(--shadow);overflow-wrap:anywhere}
+.arrows .from{font-weight:500;color:var(--head)}
+.arrows .to-a{color:var(--green-t);text-align:center;opacity:.7}
+.arrows .hd{background:none;border:0;box-shadow:none;padding:0 14px;font-size:12px;font-weight:500;color:var(--mut)}
+@media(max-width:520px){.arrows li{grid-template-columns:minmax(0,1fr)}.arrows .to-a{display:none}.arrows .from::after{content:" →";color:var(--green-t)}}
+/* veredito C/E */
+.verdicts{list-style:none;margin:12px 0 18px;padding:0;display:grid;gap:8px}
+.verdicts li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;box-shadow:var(--shadow);overflow-wrap:anywhere}
+.badge{grid-row:span 2;align-self:start;font-size:12px;font-weight:600;padding:3px 10px;border-radius:999px;white-space:nowrap}
+.badge.C{background:var(--green);color:var(--green-t)}.badge.E{background:var(--yellow);color:var(--yellow-t)}
+.verdicts .why{font-size:14px;color:var(--mut)}
+/* painel de incidência */
+.bars{display:grid;gap:8px;margin:10px 0 4px;max-width:760px}
+.bar{display:grid;grid-template-columns:minmax(0,15em) minmax(0,1fr) 3em;gap:12px;align-items:center;font-size:14px}
+.bar i{display:block;height:12px;border-radius:999px;background:var(--blue-b)}
+.bar.top i{background:#86efac}
+.bar span:nth-child(2){background:var(--card);border-radius:999px;border:1px solid var(--line)}
+.bar span:last-child{text-align:right;font-variant-numeric:tabular-nums;font-weight:500;color:var(--head)}
+@media(max-width:520px){.bar{grid-template-columns:minmax(0,9em) minmax(0,1fr) 2.4em}}
+.note{font-size:13px;color:var(--mut)}
+/* caderno de erros */
+.erros{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:14px;margin-top:12px}
+.err{background:var(--card);border:1px solid var(--yellow-b);border-left:5px solid #fcd34d;border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:8px;box-shadow:var(--shadow);overflow-wrap:anywhere}
+.err.alt{border-color:var(--blue-b);border-left:5px dashed #7dd3fc}
+.err[hidden]{display:none}
+.err .q{font-weight:500;font-size:18px;color:var(--head);line-height:1.2}
+.err .src{font-size:13px;color:var(--mut)}
+.err .stmt{font-size:15px}
+.res{display:flex;flex-direction:column;gap:6px;font-size:14px}
+.res span{padding:5px 10px;border-radius:8px;font-weight:500;overflow-wrap:anywhere}
+.you{background:var(--yellow);color:var(--yellow-t)}
+.gab{background:var(--green);color:var(--green-t)}
+.rule{border-top:1px solid var(--line);padding-top:8px;font-size:14.5px;color:var(--head)}
+.seg{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.seg button{font:inherit;font-size:14px;font-weight:400;min-height:40px;padding:6px 16px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--green);border-color:var(--green-b);color:var(--green-t);font-weight:500}
+.seg button:focus-visible{outline:2px solid var(--blue-b);outline-offset:2px}
+/* flashcards */
+#flash{display:grid;gap:8px}
+details{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px;box-shadow:var(--shadow);overflow-wrap:anywhere}
+summary{cursor:pointer;font-weight:400;color:var(--head);list-style:none;display:flex;gap:12px}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"+";font-weight:400;color:var(--blue-t);width:1em;flex:none}
+details[open]{border-color:var(--green-b)}
+details[open] summary::before{content:"−"}
+summary:focus-visible{outline:2px solid var(--blue-b);outline-offset:4px;border-radius:4px}
+details p{margin:8px 0 0 1.8em}
+footer{border-top:1px solid var(--line);padding:22px 0 50px;color:var(--mut);font-size:14px}
+
+/* ajustes de toque e leitura em celular */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{-webkit-tap-highlight-color:rgba(3,105,161,.12)}
+details{padding:0 16px}
+summary{padding:12px 0;min-height:44px;align-items:flex-start}
+details p{margin:0 0 12px 1.8em}
+code{font-size:max(.9em,12px)}
+.scroll a{min-height:40px;display:inline-flex;align-items:center}
+.seg button{min-height:44px}
+@media(max-width:600px){h1{font-size:clamp(26px,8vw,34px)}.box,.card,.err,.step{padding:14px}section{padding:26px 0}}
+.site-back{display:inline-flex;align-items:center;min-height:44px;margin-top:10px;padding:0 14px;border-radius:999px;background:#fff;border:1px solid #e2e8f0;color:#0369a1;font-size:14px;text-decoration:none}.site-back:hover,.site-back:focus-visible{background:#e0f2fe;outline:none}.site-back[hidden]{display:none}
+</style>
+
+<link href="https://fonts.googleapis.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/></head>
+<body>
+<div class="wrap"><a class="site-back" id="siteBack" href="../../../index.html#/bacen-2026/banco-de-dados" hidden>← Todas as apostilas</a></div>
+<div class="wrap">
+<header>
+<h1>Aula 01: modelagem conceitual e o modelo ER</h1>
+<p class="sub">Revisão final da Aula 01 do Estratégia (BACEN, TI, prof. Lucas Fargoni). Os temas que mais caem vêm primeiro, e o caderno dos seus erros nas 5 listas fica logo abaixo.</p>
+</header>
+</div>
+<nav><div class="wrap scroll">
+<a href="#erros">Meus erros</a><a href="#incidencia">Incidência</a><a href="#card">Cardinalidade</a><a href="#atrib">Atributos</a><a href="#ent">Entidades</a><a href="#rel">Relacionamentos</a><a href="#eer">Generalização</a><a href="#notacoes">Notações</a><a href="#map">ER → tabelas</a><a href="#projeto">Projeto de BD</a><a href="#treino">Treino C/E</a>
+</div></nav>
+<main class="wrap">
+<section id="erros"><div class="n">!</div><div>
+<h2>Caderno de erros: Aula 01</h2>
+<span class="inc hi">Revise isto antes de tudo</span>
+<p>As <b>fichas amarelas</b> são as questões em que você marcou <b>X</b> na correção (14 questões). As <b>fichas azuis com borda tracejada</b> não têm X, mas a alternativa marcada é <b>diferente do gabarito</b> (14 questões). Vale conferir. Quando a questão é um diagrama, o card traz a regra que resolve, já que a figura não cabe aqui.</p>
+<div aria-label="Filtrar erros" class="seg" role="group">
+<button aria-pressed="true" data-f="all" type="button">Todas (28)</button><button aria-pressed="false" data-f="x" type="button">Só com X (14)</button><button aria-pressed="false" data-f="d" type="button">Só divergentes (14)</button>
+</div>
+<div class="erros" id="errlist"></div>
+</div></section>
+<section id="incidencia"><div class="n">%</div><div>
+<h2>Onde caem as questões desta aula</h2>
+<p>Quantidade de questões das 5 listas (106 no total) que tratam de cada tema. Uma questão pode entrar em mais de um tema.</p>
+<div class="bars" id="bars"></div>
+<p class="note">Contagem aproximada, feita por palavras-chave nos enunciados (p. 158–235). Mais da metade das questões pede para <b>ler um diagrama</b>, o que no fundo é ler cardinalidade, atributos e generalização.</p>
+</div></section>
+<section id="card"><div class="n">01</div><div>
+<h2>Cardinalidade e participação</h2>
+<span class="inc hi">O que mais cai · 7 dos seus erros passam por aqui</span>
+<p>Notação de Chen: <b>(mín, máx)</b> ao lado da entidade. <b>Mínimo</b> = participação/obrigatoriedade. <b>Máximo</b> = cardinalidade propriamente dita.</p>
+<div class="cards"><div class="card"><h5>Cardinalidade mínima</h5><dl><dt>Valor</dt><dd><b>0</b></dd><dt>Significa</dt><dd>Pode não participar</dd><dt>Outros nomes</dt><dd>Opcional · participação <b>parcial</b> · modalidade opcional</dd></dl></div><div class="card"><h5>Cardinalidade mínima</h5><dl><dt>Valor</dt><dd><b>≥ 1</b></dd><dt>Significa</dt><dd>Tem que participar</dd><dt>Outros nomes</dt><dd>Obrigatória · participação <b>total</b> · dependência de existência</dd></dl></div><div class="card"><h5>Cardinalidade máxima</h5><dl><dt>Valor</dt><dd><b>1</b></dd><dt>Significa</dt><dd>No máximo um</dd><dt>Outros nomes</dt><dd>—</dd></dl></div><div class="card"><h5>Cardinalidade máxima</h5><dl><dt>Valor</dt><dd><b>N</b></dd><dt>Significa</dt><dd>Vários</dd><dt>Outros nomes</dt><dd>—</dd></dl></div></div>
+<div class="grid2">
+<div class="box"><h4>Regra de leitura (Chen)</h4>Para ler <b>A → B</b>, pegue o par que fica <b>do lado de B</b>.<br/>A (1,1) —◇— (0,n) B = "cada A tem de 0 a N B; cada B tem exatamente 1 A". Na hora de nomear o relacionamento, use só os máximos: <b>1:N</b>.</div>
+<div class="box"><h4>Regra de leitura (pé-de-galinha)</h4>Também se lê <b>o símbolo do lado oposto</b> à entidade analisada. O símbolo <b>colado na entidade</b> é o <b>máximo</b> (| = 1, pé = N). O <b>mais afastado</b> é o <b>mínimo</b> (○ = 0, | = 1).</div>
+</div>
+<div class="cards"><div class="card"><h5>1:1</h5><dl><dt>Exemplo</dt><dd>Torcedor–Cartão ("cada torcedor um único cartão")</dd><dt>No relacional</dt><dd>FK em qualquer lado, com UNIQUE (em geral no lado de participação total)</dd></dl></div><div class="card"><h5>1:N</h5><dl><dt>Exemplo</dt><dd>Departamento–Funcionário</dd><dt>No relacional</dt><dd>FK no lado <b>N</b></dd></dl></div><div class="card"><h5>N:M</h5><dl><dt>Exemplo</dt><dd>Aluno–Disciplina</dd><dt>No relacional</dt><dd><b>Nova tabela</b> com as duas FKs (ex.: MATRICULA)</dd></dl></div></div>
+<div class="box red"><h4>Seus erros neste tema</h4><ul>
+<li><b>CEB 9</b>: alimento —transporta— transportador com <b>○ (zero)</b> do lado do transportador → um alimento pode <b>não</b> ser transportado. "Para todo alimento é necessária uma ação de transporte" → <span class="E">E</span>.</li>
+<li><b>CEB 10</b>: o fabricante tem participação obrigatória (|) do outro lado em autoriza, produz e contrata, e em todos o máximo é 1:N → <span class="C">C</span>.</li>
+<li><b>FGV 1</b> (Chen → pé-de-galinha): (1,1) junto de DEP e (0,n) junto de EMP = cada funcionário em <b>um e só um</b> departamento e cada departamento com <b>zero ou vários</b>. Desenhe: lado DEP ‖ (um e só um) e lado EMP ○&lt; (zero ou muitos).</li>
+<li><b>FGV 10</b>: aluno N:M disciplina, disciplina N:1 professor ⇒ <b>aluno–professor N:M</b> (I certa); <b>professor–disciplina 1:N</b> (II certa); "cada professor ministra necessariamente uma" não dá para afirmar, porque o mínimo não foi informado (III errada) → <b>I e II</b>.</li>
+<li><b>CEB 30</b>: a restrição de integridade expressa no próprio DER é a <b>cardinalidade</b>, e não "dependência".</li>
+<li><b>CEB 26 [114]</b>: no <b>ternário</b>, a cardinalidade se lê por <b>par</b>: o máximo de A e B em R = quantos C podem se associar a um par (a, b) → <span class="C">C</span>.</li>
+</ul></div>
+<h3>Instâncias e diagramas de Venn (CESGRANRIO adora)</h3>
+<ul class="tight">
+<li>E1 <b>(0,1)</b> —R— <b>(1,N)</b> E2: o par perto de E2 diz que <b>cada E1</b> se liga a 1..N de E2. O par perto de E1 diz que <b>cada E2</b> se liga a 0..1 de E1 ⇒ no Venn, nenhum b recebe mais de uma seta e todo a tem seta.</li>
+<li>Pergunta "quais conjuntos NÃO violam": teste cada elemento contra o <b>mínimo</b> (alguém ficou de fora?) e o <b>máximo</b> (alguém aparece demais?).</li>
+</ul>
+</div></section>
+<section id="atrib"><div class="n">02</div><div>
+<h2>Atributos</h2>
+<span class="inc hi">Muito cobrado · 4 erros seus</span>
+<p><b>Atributos</b> = propriedades que descrevem <b>entidades e relacionamentos</b>. Em Chen, são <b>elipses</b> (ou círculos). Por padrão, todo atributo é <b>obrigatório e monovalorado (1,1)</b>, e esse (1,1) fica implícito.</p>
+<div class="cards"><div class="card"><h5>Identificação</h5><dl><dt>Tipos</dt><dd><b>Identificador (chave)</b> × não identificador. Simples (1 atributo) ou <b>composto</b> (2+)</dd><dt>Exemplo</dt><dd>CPF; (corredor, nº) de prateleira</dd><dt>Notação Chen</dt><dd>Nome <b>sublinhado</b>; círculo <b>preenchido</b> ●</dd></dl></div><div class="card"><h5>Estrutura</h5><dl><dt>Tipos</dt><dd><b>Simples</b> (atômico) × <b>composto</b> (subpartes com significado próprio)</dd><dt>Exemplo</dt><dd>CPF × endereço (rua, nº, CEP…)</dd><dt>Notação Chen</dt><dd>Elipse com sub-elipses</dd></dl></div><div class="card"><h5>Nº de valores</h5><dl><dt>Tipos</dt><dd><b>Monovalorado</b> × <b>multivalorado</b> (vários valores do <b>mesmo domínio</b>)</dd><dt>Exemplo</dt><dd>Idade × telefones, dependentes</dd><dt>Notação Chen</dt><dd><b>Elipse dupla</b>; (0,n) ou (1,n) no atributo</dd></dl></div><div class="card"><h5>Obrigatoriedade</h5><dl><dt>Tipos</dt><dd><b>Obrigatório</b> (1,1) × <b>opcional</b> (0,1)/(0,n)</dd><dt>Exemplo</dt><dd>Nome × complemento</dd><dt>Notação Chen</dt><dd>Mínimo 0 = opcional</dd></dl></div><div class="card"><h5>Armazenamento</h5><dl><dt>Tipos</dt><dd><b>Armazenado</b> × <b>derivado</b> (calculado)</dd><dt>Exemplo</dt><dd>Data de nascimento → idade</dd><dt>Notação Chen</dt><dd><b>Elipse tracejada</b></dd></dl></div><div class="card"><h5>Finalidade</h5><dl><dt>Tipos</dt><dd><b>Descritivo</b> · <b>nominativo</b> (descritivo + rótulo) · <b>referencial</b> (aponta para outra entidade)</dd><dt>Exemplo</dt><dd>Cor · matrícula · ID_FABRICANTE em PRODUTO</dd><dt>Notação Chen</dt><dd>Sem notação própria</dd></dl></div></div>
+<div class="grid2">
+<div class="box"><h4>Pegadinhas de atributo</h4><ul class="tight">
+<li><b>"Sub-atributos" agregados</b> = <b>composto</b> (podem ser de tipos diferentes).</li>
+<li><b>Vários valores</b> do mesmo tipo = <b>multivalorado</b>.</li>
+<li>Calculado a partir de outro = <b>derivado</b>.</li>
+<li><b>"Atributo redundante" não é tipo de atributo.</b></li>
+<li>Atributos com o <b>mesmo nome em entidades diferentes</b> podem existir (não é erro de modelo).</li>
+<li>O <b>domínio</b> do atributo = conjunto de <b>valores válidos</b>.</li>
+</ul></div>
+<div class="box"><h4>NULL e atributos complexos</h4><ul class="tight">
+<li><b>NULL</b>: valor <b>não aplicável</b> (nº do apto. de uma casa) ou <b>desconhecido</b>.</li>
+<li><b>Complexo</b>: composto e multivalorado aninhados. Notação: <b>( )</b> para composto, <b>{ }</b> para multivalorado.</li>
+<li>Relacionamentos <b>podem ter atributos</b>, <mark>independentemente da cardinalidade</mark>.</li>
+</ul></div>
+</div>
+<div class="box red"><h4>Seus erros neste tema</h4><ul>
+<li><b>CESGRANRIO 20</b>: o relacionamento pode ter atributos <b>independentemente das cardinalidades</b> (gab. E). Não há condição de mínimo maior que zero.</li>
+<li><b>Multibancas 1</b>: o que <b>NÃO</b> é tipo de atributo = <b>redundante</b> (gab. D). Derivado, composto, chave e multivalorado existem.</li>
+<li><b>FGV 6</b>: "Dependentes" (filhos, pai, mãe…) de Pessoa = <b>multivalorado</b>, e não derivado.</li>
+<li><b>FGV 22</b>: atributo com "sub-atributos" agregados = <b>composto</b>, e não derivado.</li>
+<li><b>VUNESP 6</b>: relacionamento pode ter atributos <b>descritivos e de qualquer tipo</b>. A certa: "<b>binário envolve dois conjuntos de entidades distintos</b>".</li></ul></div>
+<p>CESPE Q7 <span class="E">E</span>: "atributos determinantes… podendo existir mais de um valor simultaneamente". O identificador tem valor <b>único</b>.</p>
+</div></section>
+<section id="ent"><div class="n">03</div><div>
+<h2>Entidades: forte, fraca e associativa</h2>
+<span class="inc hi">Muito cobrado · 3 erros seus</span>
+<p><b>Entidade</b> = objeto do mundo real, <b>concreto ou abstrato</b>, sobre o qual se guardam dados. Ela é um <b>retângulo</b> no DER. <b>Tipo</b> de entidade = descrição. <b>Conjunto</b> (entity set) = instâncias. <b>Extensão</b> = as entidades individuais do conjunto.</p>
+<div class="cards"><div class="card"><h5>Entidade forte</h5><dl><dt>Identificação</dt><dd><b>Própria</b> (tem chave)</dd><dt>Existência</dt><dd>Independente</dd><dt>Ligação</dt><dd>—</dd><dt>Notação Chen</dt><dd>Retângulo simples</dd><dt>Exemplo</dt><dd>Disciplina</dd></dl></div><div class="card"><h5>Entidade fraca</h5><dl><dt>Identificação</dt><dd><b>Não</b> tem atributos suficientes para a chave; usa <b>chave parcial</b> + chave da dona</dd><dt>Existência</dt><dd><b>Depende</b> da entidade forte (identificadora/dona)</dd><dt>Ligação</dt><dd><b>Relacionamento identificador</b>, com participação total da fraca</dd><dt>Notação Chen</dt><dd><b>Retângulo duplo</b>; identificador = <b>losango duplo</b>; chave parcial <b>sublinhada tracejada</b></dd><dt>Exemplo</dt><dd>Ementa (só existe com a disciplina); Dependente</dd></dl></div><div class="card"><h5>Entidade associativa</h5><dl><dt>Identificação</dt><dd>É um <b>relacionamento tratado como entidade</b></dd><dt>Existência</dt><dd>Depende das entidades do relacionamento</dd><dt>Ligação</dt><dd>Passa a se relacionar com <b>outras entidades</b></dd><dt>Notação Chen</dt><dd><b>Retângulo com losango dentro</b></dd><dt>Exemplo</dt><dd>ESCREVE(autor, livro) ligado a EDITORA</dd></dl></div></div>
+<div class="box red"><h4>Seus erros neste tema</h4><ul>
+<li><b>CEB 1</b> (notação Chen): entidade associativa = <b>retângulo com um losango dentro</b> (gab. B). O retângulo simples é entidade.</li>
+<li><b>CESGRANRIO 28</b>: Conta (retângulo <b>arredondado</b> = <b>fraca/dependente</b>) herda as PKs das donas. Conte as FKs: Conta 2 + Movimento 3 + Endereço 1 + Contato 1 + Conta_Cliente 4 = <b>11</b> (gab. D).</li>
+<li><b>FGV 13</b>: em IDEF1X, <b>dependente = cantos arredondados</b>. A Entidade_1 é retângulo reto, logo independente.</li></ul></div>
+<ul class="tight">
+<li><b>Agregação</b> = tratar um relacionamento como entidade de nível superior, porque o ER puro <b>não relaciona relacionamentos</b>. É a mesma ideia da entidade associativa.</li>
+<li>FGV 27: entidade fraca <b>não possui identificação própria</b> e <b>sua existência depende</b> de outra, a forte.</li>
+<li>CESPE Q27 [67] <span class="E">E</span>: entidades sem atributos para formar a PK são <b>fracas</b>, e não fortes.</li>
+<li>CESPE Q18 [75] <span class="E">E</span>: coisas abstratas também são <b>entidades</b>, e não relacionamentos.</li>
+</ul>
+</div></section>
+<section id="rel"><div class="n">04</div><div>
+<h2>Relacionamentos: grau e papéis</h2>
+<span class="inc">Incidência média · erro seu na CEB 25</span>
+<p><b>Relacionamento</b> = associação entre entidades (<b>losango</b>). <b>Ocorrência</b> = cada par de instâncias associadas. <b>Papel</b> = a função da entidade no relacionamento.</p>
+<div class="cards"><div class="card"><h5>Unário (<b>autorrelacionamento</b> / recursivo)</h5><dl><dt>Entidades envolvidas</dt><dd>A mesma entidade, em <b>papéis diferentes</b></dd><dt>Exemplo</dt><dd>PESSOA –CASAMENTO– PESSOA; EMPREGADO gerencia EMPREGADO</dd><dt>Cuidado</dt><dd>Envolve <b>um</b> conjunto de entidades, participando duas vezes</dd></dl></div><div class="card"><h5>Binário</h5><dl><dt>Entidades envolvidas</dt><dd><b>Dois conjuntos de entidades distintos</b></dd><dt>Exemplo</dt><dd>Cliente–Pedido</dd><dt>Cuidado</dt><dd>É <b>associação entre entidades</b>, e não entre atributos</dd></dl></div><div class="card"><h5>Ternário / n-ário</h5><dl><dt>Entidades envolvidas</dt><dd>3 ou mais</dd><dt>Exemplo</dt><dd>Fornecedor–Peça–Projeto</dd><dt>Cuidado</dt><dd>Cardinalidade lida <b>por pares</b></dd></dl></div></div>
+<div class="box red"><h4>Seus erros neste tema</h4><ul>
+<li><b>CEB 25</b>: CASAMENTO associa ocorrências da <b>mesma</b> entidade PESSOA = <b>autorrelacionamento</b> (gab. C), e não entidade associativa.</li>
+<li><b>VUNESP 3</b>: relacionamento binário = <b>associação entre dois conjuntos de entidades distintos</b> (gab. E). Não "limita a dois o número de relacionamentos".</li>
+<li><b>FGV 29</b>: "mapeamento estabelecido entre duas classes de coisas… visualizadas pela abstração" = <b>agregação binária</b> (gab. A), e não cardinalidade.</li>
+<li><b>FGV 26</b> (você acertou): para saber se o atributo é do relacionamento N:M, teste se ele precisa <b>das duas</b> entidades.</li></ul></div>
+<p>CESPE Q28 [84] <span class="E">E</span>: o número de entidades envolvidas se chama <b>grau</b>, e não "hierarquia".</p>
+</div></section>
+<section id="eer"><div class="n">05</div><div>
+<h2>Generalização e especialização (ER estendido)</h2>
+<span class="inc hi">Muito cobrado · 3 erros seus</span>
+<div class="cards"><div class="card"><h5>Especialização</h5><dl><dt>Direção</dt><dd><b>Top-down</b>: superclasse → subclasses</dd><dt>Começa com</dt><dd>Um tipo de nível alto</dd><dt>Foco</dt><dd>Diferenças (atributos <b>locais/específicos</b>)</dd><dt>Exemplo</dt><dd>LIVRO → didático, idioma, romance</dd></dl></div><div class="card"><h5>Generalização</h5><dl><dt>Direção</dt><dd><b>Bottom-up</b>: subclasses → superclasse</dd><dt>Começa com</dt><dd>Vários tipos de nível baixo</dd><dt>Foco</dt><dd>Semelhanças (suprime diferenças)</dd><dt>Exemplo</dt><dd>carro + ônibus → VEÍCULO</dd></dl></div></div>
+<p><b>Herança</b>: a subclasse herda <b>todos</b> os atributos <b>e relacionamentos</b> da superclasse. "Nem sempre herda" está errado.</p>
+<div class="cards"><div class="card"><h5>Disjunção</h5><dl><dt>Opções</dt><dd><b>Disjunta (exclusiva)</b> × <b>sobreposta (compartilhada)</b></dd><dt>Pergunta que ela responde</dt><dd>Uma instância pode estar em <b>mais de uma</b> subclasse?</dd><dt>Notação Chen/EER</dt><dd>Círculo com <b>d</b> × círculo com <b>o</b></dd></dl></div><div class="card"><h5>Participação / integralidade</h5><dl><dt>Opções</dt><dd><b>Total</b> × <b>parcial</b></dd><dt>Pergunta que ela responde</dt><dd>Toda instância da superclasse <b>tem que</b> estar em alguma subclasse?</dd><dt>Notação Chen/EER</dt><dd><b>Linha dupla</b> × linha simples</dd></dl></div></div>
+<ul class="arrows"><li class="hd"><span>Combinação</span><span></span><span>Cada instância da superclasse está em…</span></li><li><span class="from">Total + exclusiva</span><span aria-hidden="true" class="to-a">→</span><span><b>Exatamente uma</b> subclasse (ninguém de fora, ninguém repetido)</span></li><li><span class="from">Total + compartilhada</span><span aria-hidden="true" class="to-a">→</span><span><b>Uma ou mais</b></span></li><li><span class="from">Parcial + exclusiva</span><span aria-hidden="true" class="to-a">→</span><span><b>Zero ou uma</b></span></li><li><span class="from">Parcial + compartilhada</span><span aria-hidden="true" class="to-a">→</span><span><b>Zero, uma ou várias</b></span></li></ul>
+<div class="box red"><h4>Seus erros neste tema</h4><ul>
+<li><b>CESGRANRIO 12</b> (exclusiva e total, E = {e1…e10}): a única opção que distribui <b>todos</b> os elementos <b>sem repetir</b> é a D (E1 ímpares, E2 pares, E3 vazio). A B deixa o e10 de fora, o que fere a total. Uma subclasse vazia é permitida.</li>
+<li><b>CESGRANRIO 24</b>: Pagamento (data, valor) especializado em Boleto, CDébito e CCrédito, com os atributos específicos em cada filho. Pagamento (1,1) —se refere a— (1,n) Entrega: cada pagamento é de uma entrega, e toda entrega tem ≥ 1 pagamento (gab. C).</li>
+<li><b>FGV 2</b>: <b>(d) + total</b> = agência em imóvel próprio <b>OU</b> alugado, e <b>não há</b> agência sem um dos dois (gab. D). Seu "próprio E alugado" seria sobreposição.</li>
+<li><b>Multibancas 2</b>: bottom-up parte das <b>entidades individuais para os relacionamentos</b>; top-down faz o inverso (gab. A). "Mais rápido ou mais fácil" não é critério.</li></ul></div>
+<ul class="tight">
+<li>CESPE Q24/Q32: "restrição de disjunção ⇒ subclasses <b>mutuamente exclusivas</b>" <span class="C">C</span>. "Generalização = separar a superclasse em subclasses" <span class="E">E</span>, porque isso é especialização.</li>
+<li>O EER <b>tem símbolos novos</b> e <b>não</b> traz encapsulamento nem polimorfismo.</li>
+<li>Pessoa física e pessoa jurídica sob Cliente = generalização/especialização, e não relacionamento ternário.</li>
+<li>Diagrama em <b>triângulo</b> (Cesgranrio): o rótulo diz "<b>parcial/total, exclusiva/compartilhada</b>". Ex.: um funcionário de uma única categoria, mas alguns auditores também são inspetores ⇒ hierarquia aninhada.</li>
+</ul>
+</div></section>
+<section id="notacoes"><div class="n">06</div><div>
+<h2>Notações: Chen, pé-de-galinha, IDEF1X e Barker</h2>
+<span class="inc">Incidência média · 3 erros seus</span>
+<h3>Chen (DER clássico): símbolos</h3>
+<ul class="arrows"><li class="hd"><span>Símbolo</span><span></span><span>Representa</span></li><li><span class="from">Retângulo</span><span aria-hidden="true" class="to-a">→</span><span>Entidade (forte)</span></li><li><span class="from">Retângulo duplo</span><span aria-hidden="true" class="to-a">→</span><span>Entidade fraca</span></li><li><span class="from">Losango</span><span aria-hidden="true" class="to-a">→</span><span>Relacionamento</span></li><li><span class="from">Losango duplo</span><span aria-hidden="true" class="to-a">→</span><span>Relacionamento identificador</span></li><li><span class="from">Retângulo com losango dentro</span><span aria-hidden="true" class="to-a">→</span><span>Entidade associativa</span></li><li><span class="from">Elipse / elipse sublinhada</span><span aria-hidden="true" class="to-a">→</span><span>Atributo / atributo-chave</span></li><li><span class="from">Elipse dupla / tracejada</span><span aria-hidden="true" class="to-a">→</span><span>Multivalorado / derivado</span></li><li><span class="from">Linha dupla</span><span aria-hidden="true" class="to-a">→</span><span>Participação total</span></li></ul>
+<h3>Pé-de-galinha (Engenharia de Informação, James Martin)</h3>
+<ul class="arrows"><li class="hd"><span>Terminação (de fora para dentro)</span><span></span><span>Lê-se</span></li><li><span class="from">‖ (duas barras)</span><span aria-hidden="true" class="to-a">→</span><span>Um e somente um (1,1)</span></li><li><span class="from">○|</span><span aria-hidden="true" class="to-a">→</span><span>Zero ou um (0,1)</span></li><li><span class="from">|&lt;</span><span aria-hidden="true" class="to-a">→</span><span>Um ou muitos (1,N)</span></li><li><span class="from">○&lt;</span><span aria-hidden="true" class="to-a">→</span><span>Zero ou muitos (0,N)</span></li></ul>
+<h3>IDEF1X (FIPS 184, força aérea dos EUA): o mais cobrado em FGV e CESGRANRIO</h3>
+<div class="cards"><div class="card"><h5>Entidade independente</h5><dl><dt>Notação</dt><dd>Retângulo de <b>cantos retos</b></dd><dt>Significado</dt><dd>Chave própria</dd></dl></div><div class="card"><h5>Entidade dependente</h5><dl><dt>Notação</dt><dd>Retângulo de <b>cantos arredondados</b></dd><dt>Significado</dt><dd>A PK contém a chave de outra (dependência de identificador)</dd></dl></div><div class="card"><h5>Relacionamento identificador</h5><dl><dt>Notação</dt><dd>Linha <b>contínua</b></dd><dt>Significado</dt><dd>A PK do pai <b>entra na PK</b> do filho (filho é dependente)</dd></dl></div><div class="card"><h5>Não identificador</h5><dl><dt>Notação</dt><dd>Linha <b>tracejada</b></dd><dt>Significado</dt><dd>A PK do pai vira <b>FK fora da PK</b> do filho</dd></dl></div><div class="card"><h5>Losango vazio ◇ (lado do pai)</h5><dl><dt>Notação</dt><dd>Não identificador <b>opcional</b></dd><dt>Significado</dt><dd>FK pode ser <b>nula</b></dd></dl></div><div class="card"><h5>Bolinha ● (lado do filho)</h5><dl><dt>Notação</dt><dd>Sozinha</dd><dt>Significado</dt><dd><b>Zero, um ou muitos</b></dd></dl></div><div class="card"><h5>● com <b>P</b></h5><dl><dt>Notação</dt><dd>—</dd><dt>Significado</dt><dd><b>Um ou mais</b> (1,N)</dd></dl></div><div class="card"><h5>● com <b>Z</b></h5><dl><dt>Notação</dt><dd>—</dd><dt>Significado</dt><dd><b>Zero ou um</b></dd></dl></div><div class="card"><h5>● com número</h5><dl><dt>Notação</dt><dd>—</dd><dt>Significado</dt><dd>Quantidade exata</dd></dl></div><div class="card"><h5>Atributos</h5><dl><dt>Notação</dt><dd>Chave <b>acima</b> da linha; demais abaixo</dd><dt>Significado</dt><dd>(FK), (PK), (AKn) = chave alternativa, (O) = opcional</dd></dl></div><div class="card"><h5>Categorização</h5><dl><dt>Notação</dt><dd>Círculo com <b>dois traços</b> = completa; um traço = incompleta</dd><dt>Significado</dt><dd>Um círculo para o grupo = exclusiva</dd></dl></div></div>
+<div class="box red"><h4>Seus erros neste tema</h4><ul>
+<li><b>FGV 13</b>: ●<b>P</b> = um ou mais ⇒ "rela_D: Entidade_3 se relaciona com uma ou mais Entidade_4" (gab. D). rela_B está ao contrário: o filho liga-se a <b>um</b> pai, e o pai pode ter vários filhos.</li>
+<li><b>FGV 14</b> (divergente): B <b>não tem PK própria</b> (nada acima da linha), então a única chave é a FK vinda de A ⇒ <b>1:1</b>, mesmo com o símbolo de "muitos".</li>
+<li><b>CESGRANRIO 21</b> (divergente): da Engenharia de Informação, opcional (○) e 0..N, entre entidades independentes ⇒ IDEF1X com <b>◇ + linha tracejada + ●</b> (gab. A).</li></ul></div>
+<div class="grid2">
+<div class="box"><h4>Barker (Oracle CASE)</h4><ul class="tight"><li>Retângulo de <b>cantos arredondados</b>, nome em MAIÚSCULAS</li><li><b>#</b> chave · <b>*</b> ou • obrigatório · <b>o</b> opcional</li><li>Linha <b>contínua</b> = obrigatório · <b>tracejada</b> = opcional</li><li>Só relacionamentos <b>binários</b></li><li>Obrigatoriedade e máximo ficam em <b>lados opostos</b></li></ul></div>
+<div class="box"><h4>UML (diagrama de classes)</h4><ul class="tight"><li>Multiplicidade <b>1</b>, <b>0..1</b>, <b>0..*</b>, <b>1..*</b></li><li>Lê-se como no Chen: o número perto da classe B diz quantos B cada A tem</li><li>Diagramas <b>estruturais</b> (classes) × <b>comportamentais</b> (casos de uso)</li></ul></div>
+</div>
+</div></section>
+<section id="map"><div class="n">07</div><div>
+<h2>Do ER para tabelas (o que já cai nesta aula)</h2>
+<span class="inc">Incidência média · 3 erros seus</span>
+<ul class="arrows"><li class="hd"><span>Elemento do ER</span><span></span><span>Vira no relacional</span></li><li><span class="from">Entidade forte</span><span aria-hidden="true" class="to-a">→</span><span>Tabela com a própria PK</span></li><li><span class="from">Entidade fraca</span><span aria-hidden="true" class="to-a">→</span><span>Tabela cuja PK = chave parcial + <b>PK da dona</b> (FK)</span></li><li><span class="from">1:N</span><span aria-hidden="true" class="to-a">→</span><span>FK no lado N</span></li><li><span class="from"><b>N:M</b></span><span aria-hidden="true" class="to-a">→</span><span><b>Tabela própria</b> com as duas FKs (+ atributos do relacionamento)</span></li><li><span class="from">Multivalorado</span><span aria-hidden="true" class="to-a">→</span><span>Tabela à parte</span></li><li><span class="from">Autorrelacionamento 1:1 ou 1:N</span><span aria-hidden="true" class="to-a">→</span><span>FK na <b>própria tabela</b> (N:N exige outra tabela)</span></li></ul>
+<div class="box red"><h4>Seus erros neste tema</h4><ul>
+<li><b>FGV 25</b>: só a I está certa (gab. A). Uma tabela pode vir de uma <b>entidade ou de um N:M</b>. A II é falsa: nomes de colunas são <b>distintos</b> na tabela. A III é falsa: as regras de mapeamento <b>mudam</b> para relacional, rede ou hierárquico.</li>
+<li><b>CESGRANRIO 25</b> (divergente): ALUNO, MATRICULA(cpf, cod-cad) e CADEIRA ⇒ <b>entidade, relacionamento N:M, entidade</b> (gab. A). MATRICULA só tem as duas chaves.</li>
+<li><b>CESGRANRIO 28</b>: contar as FKs migradas → 11 (ver Entidades).</li></ul></div>
+<ul class="tight">
+<li>FGV 28: a FK fica na <b>própria tabela</b> no autorrelacionamento <b>1:1 e 1:N</b> (gab. A).</li>
+<li>CESPE Q12 <span class="E">E</span>: no modelo lógico Hospital–Universidade, quem diz o máximo de Universidades por Hospital é o par <b>do lado da Universidade</b>.</li>
+</ul>
+</div></section>
+<section id="projeto"><div class="n">08</div><div>
+<h2>Projeto de banco de dados e níveis de modelo</h2>
+<span class="inc">Incidência média · erro seu na CEB 5</span>
+<div class="flow"><div class="step"><h5>Levantamento de requisitos</h5><dl><dt>Produz</dt><dd>Requisitos de <b>dados</b> + requisitos <b>funcionais</b> (em paralelo: análise funcional)</dd><dt>Depende de</dt><dd>Usuários</dd></dl></div><div aria-hidden="true" class="arrow">→</div><div class="step"><h5>Projeto conceitual</h5><dl><dt>Produz</dt><dd><b>Esquema conceitual</b> (DER/MER), alto nível</dd><dt>Depende de</dt><dd>Nada: independe de SGBD, hardware e software</dd></dl></div><div aria-hidden="true" class="arrow">→</div><div class="step"><h5>Projeto lógico</h5><dl><dt>Produz</dt><dd>Esquema lógico (relacional: tabelas)</dd><dt>Depende de</dt><dd>Do <b>tipo</b> de SGBD</dd></dl></div><div aria-hidden="true" class="arrow">→</div><div class="step"><h5>Projeto físico</h5><dl><dt>Produz</dt><dd>Esquema físico (índices, armazenamento)</dd><dt>Depende de</dt><dd>Do SGBD específico</dd></dl></div></div>
+<div class="box red"><h4>Erro seu (CEB 5)</h4>"Modelo <b>físico</b> = estrutura vista pelo <b>usuário</b> do SGBD" → <span class="E">E</span>. O físico descreve <b>como os dados são armazenados</b> (índices, espaço em disco). A visão do usuário é o conceitual ou o lógico.</div>
+<div class="grid2">
+<div class="box"><h4>MER: origem e características</h4><ul class="tight"><li><b>Peter Chen, 1976</b>; "formalização do óbvio"</li><li>Modelo <b>conceitual</b> de alto nível. "MER é representacional" está <span class="E">E</span></li><li>Desejáveis: <b>expressividade, simplicidade, minimalismo, representação diagramática, formalidade</b></li><li>MER = o modelo; <b>DER</b> = a representação gráfica dele</li><li>Normalmente feito pelo <b>administrador de dados</b></li></ul></div>
+<div class="box"><h4>Ciclo de vida micro do BD</h4>Definição do sistema → projeto do BD → implementação → carga/conversão de dados → conversão de aplicações → teste e validação → operação → monitoramento e manutenção.</div>
+</div>
+<ul class="tight">
+<li>CESPE Q29 <span class="E">E</span>: o diagrama com elipses e losangos é <b>conceitual</b>, e não lógico.</li>
+<li>CESPE Q22 [90] <span class="E">E</span>: o modelo físico é de baixo nível, mas não é verdade que "somente SGBDs conseguem interpretá-lo".</li>
+<li>FGV 3: os modelos conceituais descrevem a <b>visão geral dos principais dados e relações, independentemente das restrições de implementação</b>.</li>
+<li>CESGRANRIO 4: a representação gráfica das entidades, atributos e relacionamentos é o <b>diagrama Entidade-Relacionamento</b>.</li>
+</ul>
+</div></section>
+<section id="treino"><div class="n">C/E</div><div>
+<h2>Treino final: itens CESPE da lista</h2>
+<span class="inc hi">Responda de cabeça e clique para ver o gabarito</span>
+<div id="flash"></div>
+</div></section>
+</main>
+<div class="wrap"><footer>Montado a partir da Aula 01 do Estratégia Concursos (BACEN · Banco de Dados e Ciência de Dados) e das suas marcações nas listas (p. 158–235). Gabaritos conforme as p. 170, 209, 214, 233 e 235. A lista da p. 215 tem o título "Multibancas", mas é a lista FGV (gabarito da p. 233).</footer></div>
+<script>
+{
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const E=[
+ ['CEBRASPE 1',1,'ISS SJC · FGV · 2024','Símbolo da entidade associativa na notação Chen.','A) retângulo simples','B) retângulo com losango','Associativa = relacionamento virando entidade: losango dentro do retângulo.','#ent'],
+ ['CEBRASPE 5',1,'BNB · Analista · 2022','Modelo físico representa a estrutura de dados conforme vista pelo usuário do SGBD.','Certo','Errado','Físico = como os dados são armazenados. A visão do usuário é o conceitual ou o lógico.','#projeto'],
+ ['CEBRASPE 9',1,'MPE CE · 2020','A modalidade obrigatória entre transportador e transporta indica que todo alimento fabricado exige uma ação de transporte.','Certo','Errado','O ○ do lado oposto indica que o alimento pode ter zero transportes.','#card'],
+ ['CEBRASPE 25',1,'TRE-PI · 2015','CASAMENTO associa ocorrências da mesma entidade PESSOA. Esse relacionamento é…','D) entidade associativa','C) autorrelacionamento','Mesma entidade dos dois lados, em papéis diferentes = autorrelacionamento.','#rel'],
+ ['CESGRANRIO 12',1,'BASA · 2021','Generalização exclusiva e total, E = {e1..e10}: quais subconjuntos não violam?','B) E1/E2/E3 com 3 cada (e10 fora)','D) ímpares, pares, E3 vazio','Total = ninguém fica de fora. Exclusiva = ninguém se repete. Subclasse vazia pode.','#eer'],
+ ['CESGRANRIO 20',1,'LIQUIGÁS · 2018','Um relacionamento pode ter atributos…','C) se as mínimas forem > 0','E) independentemente das cardinalidades','Atributo em relacionamento não depende de cardinalidade.','#atrib'],
+ ['CESGRANRIO 24',1,'UNIRIO · 2016','Pagamento de entrega por boleto, cartão de débito ou de crédito (DER correto).','D)','C)','Superclasse Pagamento (data, valor), subclasses com os atributos próprios e Pagamento (1,1)–(1,n) Entrega.','#eer'],
+ ['CESGRANRIO 28',1,'BASA · 2014','Quantos campos (FKs) são adicionados ao converter o DER em relacional?','A) 7','D) 11','Conta é fraca (arredondada) e herda 2 FKs. Movimento 3 + End. 1 + Contato 1 + Conta_Cliente 4.','#ent'],
+ ['VUNESP 6',1,'DPE SP · 2023','Sobre conjuntos de relacionamentos no MER, é correto que…','B) só atributos numéricos','C) binário envolve dois conjuntos de entidades distintos','Relacionamentos aceitam atributos descritivos de qualquer tipo.','#rel'],
+ ['FGV 1',1,'Câmara SP · 2024','Chen → pé-de-galinha: DEP (1,1) –Lot– (0,n) EMP.','C)','E)','Cada EMP em um e só um DEP (‖ do lado DEP). Cada DEP com zero ou vários EMP (○< do lado EMP).','#card'],
+ ['FGV 13',1,'ALERJ · 2017','Leitura de um modelo IDEF1X (Entidade_1…5, rela_A…E).','A) Entidade_1 é dependente','D) rela_D: Entidade_3 com uma ou mais Entidade_4','●P = um ou mais. Dependente = cantos arredondados (Entidade_1 é reta).','#notacoes'],
+ ['FGV 25',1,'MEC · 2009','I: tabela derivada de entidade ou de N:M. II: colunas homônimas geram hierarquia. III: regras de derivação iguais para relacional, rede e hierárquico.','D) II e III','A) só a I','Colunas têm nomes distintos. O mapeamento muda conforme o modelo de destino.','#map'],
+ ['FGV 29',1,'DETRAN-RN · 2010','"Mapeamento estabelecido entre duas classes de coisas, visualizadas por abstração."','D) cardinalidade','A) agregação binária','Agregação binária = mapeamento entre elementos de duas classes (ex.: pessoa utiliza apartamento).','#rel'],
+ ['MULTIBANCAS 1',1,'PROCERGS · FUNDATEC · 2023','NÃO é tipo de atributo:','A) derivado','D) redundante','Derivado, composto, chave e multivalorado existem. "Redundante" não.','#atrib'],
+ ['CEBRASPE 10',0,'MPE CE · 2020','O fabricante, obrigatoriamente, inicia distribuição, transporte e produção, o que caracteriza 1×n.','Errado','Certo','Nos três relacionamentos o fabricante é obrigatório do outro lado, e todos são 1:N.','#card'],
+ ['CEBRASPE 26 [114]',0,'MPOG · 2015','Ternário: o máximo de A e B em R indica quantos C se associam a um par (A, B).','Errado (com "?")','Certo','No ternário a cardinalidade é lida por par de entidades.','#card'],
+ ['CEBRASPE 30',0,'TRE-PE · 2017','Restrição de integridade expressa no próprio DER.','A) dependência','D) cardinalidade','O DER expressa cardinalidade (mín/máx).','#card'],
+ ['CESGRANRIO 9',0,'BASA · 2021','Aluguel por temporada: locador e locatário podem ser a mesma pessoa.','D) Locador e Locatário separados','E) Cliente com papéis locador/locatário','Duas entidades duplicariam quem é as duas coisas. Use uma entidade Cliente com dois papéis.','#rel'],
+ ['CESGRANRIO 21',0,'Petrobras · 2014','Engenharia de Informação (opcional, 0..N) → IDEF1X equivalente.','C)','A) ◇ + tracejada + ●','Não identificador opcional: losango no pai, linha tracejada, bolinha no filho.','#notacoes'],
+ ['CESGRANRIO 25',0,'Petrobras · 2014','ALUNO, MATRICULA(cpf, cod-cad), CADEIRA no DER.','D) entidade, entidade, relacionamento','A) entidade, relacionamento N:M, entidade','Tabela só com as duas chaves = relacionamento N:M.','#map'],
+ ['CESGRANRIO 29',0,'BASA · 2014','Torcedor, cartão (um por torcedor) e ingressos carregados.','C)','D)','Torcedor (0,1)–(0,1) Cartão, Cartão carrega 0..N Ingressos, cada ingresso para 1 cartão.','#card'],
+ ['VUNESP 3',0,'UNICAMP · 2023','Um conjunto de relacionamentos binário corresponde a…','C) limitar a dois os relacionamentos','E) associação entre dois conjuntos de entidades distintos','Binário fala do grau (2 entidades), não da quantidade de relacionamentos.','#rel'],
+ ['FGV 2',0,'CGE SC · 2023','Especialização total e subclasses desmembradas (d): Agência → Imóvel Próprio / Alugado.','B) próprio E alugado','D) próprio OU alugado, nenhuma fora','(d) = disjunta (OU). Total = nenhuma agência fica sem subclasse.','#eer'],
+ ['FGV 6',0,'DPE RS · 2023','"Dependentes" (filhos, pai, mãe…) como propriedade de Pessoa.','C) derivado','D) multivalorado','Vários valores do mesmo domínio = multivalorado.','#atrib'],
+ ['FGV 10',0,'SEFIN-RO · 2018','Aluno N:M disciplina; disciplina com um único professor.','C) III, apenas','D) I e II','Aluno–professor N:M; professor–disciplina 1:N; o mínimo do professor não foi dado.','#card'],
+ ['FGV 14',0,'TJ-RO · 2015','IDEF1X: A(A1|A2) e B(sem chave; B1, B2) ligadas por ‖—○<.','B) 1:N','A) 1:1','B não tem PK própria e só a FK de A a identifica, então é 1:1.','#notacoes'],
+ ['FGV 22',0,'MEC · 2009','Atributo com "sub-atributos" agregados a ele.','B) derivado','C) composto','Subpartes = composto. Derivado = calculado.','#atrib'],
+ ['MULTIBANCAS 2',0,'PROCERGS · 2023','Diferença entre bottom-up e top-down.','C) bottom-up mais rápido','A) bottom-up: entidades → relacionamentos','Bottom-up parte das entidades individuais. Top-down parte dos relacionamentos.','#eer']
+];
+const L=document.getElementById('errlist');
+L.innerHTML=E.map(e=>`<article class="err${e[1]?'':' alt'}" data-k="${e[1]?'x':'d'}"><div class="q">${esc(e[0])}${e[1]?'':''}</div><div class="src">${esc(e[2])}${e[1]?' · marcada com X':' · sem X, mas diverge do gabarito'}</div><div class="stmt">${esc(e[3])}</div><div class="res"><span class="you">Você: ${esc(e[4])}</span><span class="gab">Gabarito: ${esc(e[5])}</span></div><div class="rule">${esc(e[6])} <a href="${e[7]}">ver tema</a></div></article>`).join('');
+for(const b of document.querySelectorAll('.seg button'))b.addEventListener('click',()=>{for(const o of document.querySelectorAll('.seg button'))o.setAttribute('aria-pressed',o===b);const f=b.dataset.f;for(const a of L.children)a.hidden=!(f==='all'||a.dataset.k===f)});
+
+const inc=[['Leitura de diagrama / estudo de caso',51],['Atributos (tipos)',37],['Cardinalidade / participação',29],['Generalização / especialização',23],['Entidade fraca, forte e identificador',23],['Conceitual × lógico × físico',18],['Notações (pé-de-galinha, IDEF1X)',13],['Grau: auto, binário, ternário',10],['Associativa / agregação',7]];
+const mx=inc[0][1];
+document.getElementById('bars').innerHTML=inc.map((r,i)=>`<div class="bar${i<3?' top':''}"><span>${esc(r[0])}</span><span><i style="width:${(r[1]/mx*100).toFixed(1)}%"></i></span><span>${r[1]}</span></div>`).join('');
+
+const fl=[
+ ['Em um DER, uma entidade (conjunto de objetos da realidade modelada) é representada por um retângulo.','C','Q6.'],
+ ['No MER, os atributos determinantes identificam um valor específico, podendo existir mais de um valor simultaneamente.','E','O identificador tem valor único (Q7).'],
+ ['Hospital (0,n)—(1,1) Universidade: infere-se que um hospital pode estar vinculado a várias universidades.','E','O máximo de universidades por hospital é o par do lado da Universidade (1,1) (Q12).'],
+ ['Produto n—1 Tipo de produto: um tipo de produto pode estar associado a somente 1 produto.','E','O n do lado do produto diz que um tipo tem vários produtos (Q13).'],
+ ['O cliente terá de cadastrar cada produto em vendas e em compras, pois a redundância será controlada pelo usuário.','E','A redundância é controlada pela modelagem, não pelo usuário (Q14).'],
+ ['As propriedades particulares que descrevem uma entidade são denominadas atributos.','C','Q15 (gab. B).'],
+ ['Uma entidade é um objeto do mundo real com propriedades, e os valores de um subconjunto delas podem identificá-la de forma única.','C','Q16.'],
+ ['No 1:1, uma entidade de X se associa no máximo a uma de Y, e uma de Y no máximo a uma de X.','C','Q17.'],
+ ['No MER, a entidade representa coisa concreta, e as coisas abstratas são representadas pelo relacionamento.','E','A entidade pode ser concreta ou abstrata (Q18).'],
+ ['Generalização: definir um tipo a partir de dois ou mais com atributos comuns (carro + ônibus → veículo).','C','Q19.'],
+ ['Uma entidade forte existe e tem atributos que a identificam sem precisar de outra entidade identificadora.','C','É a alternativa E, gabarito da Q20.'],
+ ['O MER, usado no projeto de aplicações de BD, é um modelo representacional.','E','O MER é conceitual (Q22 [89]).'],
+ ['Disjunção numa especialização: as subclasses devem ser mutuamente exclusivas.','C','Q24/Q32 (gab. A).'],
+ ['Retângulo duplo, elipse sublinhada, elipse dupla e elipse tracejada = entidade fraca, atributo-chave, multivalorado e derivado.','C','Q23 (gab. C).'],
+ ['Conjunto de entidades sem atributos suficientes para formar a PK = entidades fortes.','E','Isso é entidade fraca (Q27 [67]).'],
+ ['A chave primária identifica uma tupla e não possui mais de um atributo.','E','A PK pode ser composta (Q27 [68]).'],
+ ['O número de entidades envolvidas num relacionamento é conhecido como hierarquia.','E','Isso é o grau (Q28 [84]).'],
+ ['ER é uma modelagem semântica, e entidades são entes que podem ser distintamente identificados.','C','Q28 [86].'],
+ ['Licitação (0,n)—possui—(1,n) Modalidade, com atributos em bolinhas: é um modelo lógico, independente de SGBD.','E','É conceitual (Q29).'],
+ ['Na 1FN, toda tupla contém um único valor, do tipo apropriado, em cada atributo.','C','Q26 [113].']
+];
+document.getElementById('flash').innerHTML=fl.map(f=>`<details><summary>${esc(f[0])}</summary><p><span class="${f[1]}">${f[1]==='C'?'CERTO':'ERRADO'}</span> · ${esc(f[2])}</p></details>`).join('');
+}
+</script>
+<script>{document.addEventListener("click",e=>{const a=e.target.closest('a[href^="#"]');if(!a)return;const id=decodeURIComponent(a.getAttribute("href").slice(1));const t=id&&document.getElementById(id);if(!t)return;e.preventDefault();t.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});try{history.replaceState(null,"","#"+id)}catch(_){}})}</script>
+<script>try{if(window.top===window.self)document.getElementById("siteBack").hidden=false}catch(e){}</script>
+</body>
+</html>

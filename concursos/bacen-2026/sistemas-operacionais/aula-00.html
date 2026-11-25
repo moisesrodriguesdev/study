@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Aula 00 · Linux (SO)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:light;--bg:#f1f5f9;--card:#fff;--ink:#475569;--head:#334155;--mut:#94a3b8;--line:#e2e8f0;--green:#dcfce7;--green-b:#bbf7d0;--green-t:#15803d;--yellow:#fef9c3;--yellow-b:#fde68a;--yellow-t:#a16207;--blue:#e0f2fe;--blue-b:#bae6fd;--blue-t:#0369a1;--shadow:0 1px 2px rgba(15,23,42,.04),0 4px 14px rgba(15,23,42,.05)}
+*{box-sizing:border-box;min-width:0}html{scroll-padding-top:72px;scroll-behavior:smooth}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--bg);color:var(--ink);font:300 16px/1.65 Inter,ui-sans-serif,system-ui,sans-serif;overflow-x:clip;-webkit-font-smoothing:antialiased}
+b,strong{font-weight:600;color:var(--head)}.wrap{max-width:1100px;margin:0 auto;padding:0 max(4vw,16px)}
+header{padding:44px 0 22px}h1{font-weight:300;font-size:clamp(30px,5vw,44px);line-height:1.12;letter-spacing:-.02em;color:var(--head);margin:0 0 10px;text-wrap:balance}.sub{margin:0;max-width:68ch}
+nav{position:sticky;top:0;z-index:5;background:rgba(241,245,249,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}@media(max-width:900px){nav{position:static}}
+.scroll{overflow-x:auto;display:flex;gap:6px;padding:10px 0}.scroll a{flex:none;color:var(--ink);text-decoration:none;font-size:14px;padding:8px 14px;border-radius:999px;background:var(--card);border:1px solid var(--line)}.scroll a:hover,.scroll a:focus-visible{background:var(--blue);border-color:var(--blue-b);color:var(--blue-t);outline:none}
+section{display:grid;grid-template-columns:72px minmax(0,1fr);gap:0 22px;padding:34px 0;border-top:1px solid var(--line)}section>.n{font-weight:300;font-size:40px;line-height:1;color:var(--blue-t);opacity:.55}@media(max-width:700px){section{grid-template-columns:minmax(0,1fr)}section>.n{font-size:30px;margin-bottom:8px}}
+h2{font-weight:400;font-size:clamp(22px,3vw,28px);line-height:1.2;color:var(--head);margin:0 0 8px}h3{font-weight:500;font-size:17px;color:var(--head);margin:28px 0 10px}
+.inc{display:inline-block;font-size:13px;font-weight:500;background:var(--blue);color:var(--blue-t);padding:3px 12px;border-radius:999px;margin-bottom:14px}.inc.hi{background:var(--green);color:var(--green-t)}
+p{max-width:72ch;margin:8px 0}mark{background:var(--yellow);color:var(--head);padding:0 4px;border-radius:4px}a{color:var(--blue-t)}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.9em;background:#f8fafc;border:1px solid var(--line);border-radius:5px;padding:0 4px;color:var(--head);overflow-wrap:anywhere}
+.box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:14px 0;box-shadow:var(--shadow);overflow-wrap:anywhere}.box h4{margin:0 0 8px;font-size:15px;font-weight:600;color:var(--head)}.box.red{background:#fffdf0;border-color:var(--yellow-b)}.box.red h4{color:var(--yellow-t)}.box ul,.box ol{margin:6px 0 0;padding-left:20px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:14px}ul.tight{padding-left:20px;margin:8px 0}ul.tight li{margin:4px 0}
+.C{color:var(--green-t);font-weight:600}.E{color:var(--yellow-t);font-weight:600}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:12px;margin:12px 0 18px}.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;box-shadow:var(--shadow);overflow-wrap:anywhere}.card h5{margin:0 0 8px;font-size:15px;font-weight:600;color:var(--head);padding-bottom:8px;border-bottom:1px solid var(--line)}.card dl{margin:0;display:grid;gap:7px}.card dt{font-size:12px;font-weight:500;color:var(--mut)}.card dd{margin:0;font-size:15px}.card ul{margin:0;padding-left:18px}.card li{margin:3px 0}
+.flow{display:flex;align-items:stretch;margin:14px 0 20px;flex-wrap:wrap}.step{flex:1 1 150px;background:var(--card);border:1px solid var(--line);border-top:4px solid var(--blue-b);border-radius:14px;padding:12px 14px;box-shadow:var(--shadow);overflow-wrap:anywhere}.step:nth-of-type(3n+2){border-top-color:var(--green-b)}.step:nth-of-type(3n){border-top-color:var(--yellow-b)}.step h5{margin:0 0 6px;font-size:15px;font-weight:600;color:var(--head)}.step p{margin:0;font-size:14.5px}.arrow{flex:0 0 30px;display:flex;align-items:center;justify-content:center;color:var(--blue-t);font-size:22px;opacity:.6}@media(max-width:760px){.flow{flex-direction:column}.arrow{flex:0 0 28px;transform:rotate(90deg)}}
+.arrows{list-style:none;margin:12px 0 18px;padding:0;display:grid;gap:8px}.arrows li{display:grid;grid-template-columns:minmax(0,1fr) 28px minmax(0,1.6fr);align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px;box-shadow:var(--shadow);overflow-wrap:anywhere}.arrows .from{font-weight:500;color:var(--head)}.arrows .to-a{color:var(--green-t);text-align:center;opacity:.7}@media(max-width:520px){.arrows li{grid-template-columns:minmax(0,1fr)}.arrows .to-a{display:none}.arrows .from::after{content:" →";color:var(--green-t)}}
+.verdicts{list-style:none;margin:12px 0 18px;padding:0;display:grid;gap:8px}.verdicts li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;box-shadow:var(--shadow);overflow-wrap:anywhere}.badge{grid-row:span 2;align-self:start;font-size:12px;font-weight:600;padding:3px 10px;border-radius:999px;white-space:nowrap}.badge.C{background:var(--green);color:var(--green-t)}.badge.E{background:var(--yellow);color:var(--yellow-t)}.verdicts .why{font-size:14px;color:var(--mut)}
+.bars{display:grid;gap:8px;margin:10px 0 4px;max-width:760px}.bar{display:grid;grid-template-columns:minmax(0,15em) minmax(0,1fr) 3em;gap:12px;align-items:center;font-size:14px}.bar i{display:block;height:12px;border-radius:999px;background:var(--blue-b)}.bar.top i{background:#86efac}.bar span:nth-child(2){background:var(--card);border-radius:999px;border:1px solid var(--line)}.bar span:last-child{text-align:right;font-variant-numeric:tabular-nums;font-weight:500;color:var(--head)}@media(max-width:520px){.bar{grid-template-columns:minmax(0,9em) minmax(0,1fr) 2.4em}}.note{font-size:13px;color:var(--mut)}
+.erros{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:14px;margin-top:12px}.err{background:var(--card);border:1px solid var(--yellow-b);border-left:5px solid #fcd34d;border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:8px;box-shadow:var(--shadow);overflow-wrap:anywhere}.err[hidden]{display:none}.err .q{font-weight:500;font-size:18px;color:var(--head);line-height:1.2}.err .src{font-size:13px;color:var(--mut)}.err .stmt{font-size:15px}.res{display:flex;flex-direction:column;gap:6px;font-size:14px}.res span{padding:5px 10px;border-radius:8px;font-weight:500;overflow-wrap:anywhere}.you{background:var(--yellow);color:var(--yellow-t)}.gab{background:var(--green);color:var(--green-t)}.rule{border-top:1px solid var(--line);padding-top:8px;font-size:14.5px;color:var(--head)}
+.seg{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}.seg button{font:inherit;font-size:14px;min-height:40px;padding:6px 16px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;cursor:pointer}.seg button[aria-pressed=true]{background:var(--green);border-color:var(--green-b);color:var(--green-t);font-weight:500}.seg button:focus-visible{outline:2px solid var(--blue-b);outline-offset:2px}
+#flash{display:grid;gap:8px}details{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px;box-shadow:var(--shadow);overflow-wrap:anywhere}summary{cursor:pointer;color:var(--head);list-style:none;display:flex;gap:12px}summary::-webkit-details-marker{display:none}summary::before{content:"+";color:var(--blue-t);width:1em;flex:none}details[open]{border-color:var(--green-b)}details[open] summary::before{content:"−"}details p{margin:8px 0 0 1.8em}
+footer{border-top:1px solid var(--line);padding:22px 0 50px;color:var(--mut);font-size:14px}
+
+/* ajustes de toque e leitura em celular */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{-webkit-tap-highlight-color:rgba(3,105,161,.12)}
+details{padding:0 16px}
+summary{padding:12px 0;min-height:44px;align-items:flex-start}
+details p{margin:0 0 12px 1.8em}
+code{font-size:max(.9em,12px)}
+.scroll a{min-height:40px;display:inline-flex;align-items:center}
+.seg button{min-height:44px}
+@media(max-width:600px){h1{font-size:clamp(26px,8vw,34px)}.box,.card,.err,.step{padding:14px}section{padding:26px 0}}
+.site-back{display:inline-flex;align-items:center;min-height:44px;margin-top:10px;padding:0 14px;border-radius:999px;background:#fff;border:1px solid #e2e8f0;color:#0369a1;font-size:14px;text-decoration:none}.site-back:hover,.site-back:focus-visible{background:#e0f2fe;outline:none}.site-back[hidden]{display:none}
+</style>
+</head>
+<body>
+<div class="wrap"><a class="site-back" id="siteBack" href="../../../index.html#/bacen-2026/sistemas-operacionais" hidden>← Todas as apostilas</a></div>
+<div class="wrap">
+<header>
+<h1>Sistemas Operacionais · Aula 00: Linux</h1>
+<p class="sub">Revisão final da Aula 00 do Estratégia (BACEN, TI, prof. Evandro Dalla Vecchia). Os temas aparecem do mais cobrado para o menos cobrado, e o caderno dos seus 28 erros vem primeiro.</p>
+</header>
+</div>
+<nav><div class="wrap scroll">
+<a href="#erros">Meus erros</a><a href="#incidencia">Incidência</a><a href="#cmd">Comandos</a><a href="#rede">Rede e DNS</a><a href="#base">Conceitos básicos</a><a href="#perm">Permissões e montagem</a><a href="#proc">Processos</a><a href="#shell">Shell script</a><a href="#bsd">FreeBSD</a><a href="#treino">Treino C/E</a>
+</div></nav>
+<main class="wrap">
+
+<section id="erros"><div class="n">!</div><div>
+<h2>Caderno de erros</h2>
+<span class="inc hi">Revise isto antes de tudo</span>
+<p>As <b>28 questões com X</b> nas listas. Conferi cada resposta marcada com o gabarito e nenhuma outra questão está diferente sem X. Filtre por tema:</p>
+<div class="seg" role="group" aria-label="Filtrar erros por tema" id="filtros"></div>
+<div class="erros" id="errlist"></div>
+</div></section>
+
+<section id="incidencia"><div class="n">%</div><div>
+<h2>Onde caem as questões</h2>
+<p>Quantidade de questões em cada bloco da aula (324 questões nas 32 listas):</p>
+<div class="bars" id="bars1"></div>
+<h3>Assuntos que mais aparecem dentro das questões</h3>
+<div class="bars" id="bars2"></div>
+<p class="note">A primeira contagem é exata (tamanho das listas). A segunda é aproximada, por palavras-chave nos trechos das questões e alternativas.</p>
+</div></section>
+
+<section id="cmd"><div class="n">01</div><div>
+<h2>Comandos diversos</h2>
+<span class="inc hi">82 questões · bloco mais cobrado · 8 erros seus</span>
+<div class="cards">
+<div class="card"><h5>Arquivos e diretórios</h5><ul><li><code>mkdir -p a/b/c</code>: cria a hierarquia inteira</li><li><code>rmdir</code>: só remove diretório <b>vazio</b></li><li><code>rm -f</code>: força, sem confirmar</li><li><code>cp</code> copia · <code>mv</code> move <b>ou renomeia</b></li><li><code>touch</code>: cria vazio ou atualiza data/hora</li><li><code>pwd</code>: diretório atual · <code>dirname</code>: só o caminho</li></ul></div>
+<div class="card"><h5>Ver conteúdo</h5><ul><li><code>cat</code>: mostra e concatena (<code>-A</code> = <code>-vET</code>)</li><li><code>head</code>: <b>10 primeiras</b> linhas · <code>tail</code>: <b>10 últimas</b> (<code>-n N</code>)</li><li><code>more</code>: uma tela por vez</li><li><code>ls -las</code>: longo + ocultos + tamanho</li><li><code>zcat</code>: lê .gz sem descompactar</li></ul></div>
+<div class="card"><h5>Buscar e filtrar texto</h5><ul><li><code>grep</code>: linhas que casam; <code>-v</code> <b>inverte</b></li><li><code>sed 's/a/b/' arq &gt; saida</code>: substitui</li><li><code>awk '$8=="Z"{print $0}'</code>: por campos</li><li><code>cut -d ':' -f 2</code>: corta campos</li><li><code>wc</code>: <code>-l</code> linhas, <code>-w</code> palavras, <code>-c</code> caracteres, <code>-L</code> maior linha</li></ul></div>
+<div class="card"><h5>Disco e memória</h5><ul><li><code>df</code>: espaço <b>livre</b> por sistema de arquivos</li><li><code>du -h</code>: espaço <b>usado</b> por diretório</li><li><code>free</code>: memória RAM</li><li><code>lsblk</code>: dispositivos de bloco</li><li><code>fdisk</code>: particionar · <code>mkfs -t ext4</code>: formatar</li><li><code>fsck</code>: verificar e <b>reparar</b> o sistema de arquivos</li><li><code>dd if= of=</code>: cópia bit a bit</li></ul></div>
+<div class="card"><h5>Usuários e logins</h5><ul><li><code>last</code>: <b>últimos logins</b> (quem, quando, de onde)</li><li><code>lastlog</code>: login mais recente de cada usuário</li><li><code>who</code>: quem está logado <b>agora</b></li><li><code>finger</code>: detalhes de um usuário</li><li><code>tty</code>: nome do terminal atual</li></ul></div>
+<div class="card"><h5>Monitoramento</h5><ul><li><code>vmstat</code>: processos, memória, swap, E/S, CPU</li><li><code>iostat</code>: estatísticas de E/S de discos</li><li><code>watch -n 10 cmd</code>: repete a cada N s (padrão 2 s)</li><li><code>journalctl</code>: logs do systemd</li><li><code>which</code>: <b>caminho</b> de um comando</li></ul></div>
+</div>
+<h3>find: busca de arquivos</h3>
+<div class="flow">
+<div class="step"><h5>find</h5><p>Comando</p></div><div class="arrow" aria-hidden="true">→</div>
+<div class="step"><h5>onde</h5><p><code>.</code> = diretório atual (saída com caminhos <b>relativos</b>)</p></div><div class="arrow" aria-hidden="true">→</div>
+<div class="step"><h5>critério</h5><p><code>-type f</code> arquivo · <code>-type d</code> diretório · <code>-name</code> / <code>-iname</code> · <code>-user</code> · <code>-perm 0740</code> · <code>-size +10M</code> · <code>-mtime 5</code> · <code>-maxdepth 1</code></p></div>
+</div>
+<h3>tar: letras das opções</h3>
+<ul class="arrows">
+<li><span class="from">c / x</span><span class="to-a">→</span><span><b>cria</b> / e<b>x</b>trai</span></li>
+<li><span class="from">v · f</span><span class="to-a">→</span><span>mostra o progresso · nome do arquivo</span></li>
+<li><span class="from">z · C</span><span class="to-a">→</span><span>compressão <b>gzip</b> · extrai em <b>outro diretório</b></span></li>
+<li><span class="from">tar -cvzf a.tgz /dir</span><span class="to-a">→</span><span>compacta com gzip</span></li>
+</ul>
+<h3>Links e o 1º caractere do <code>ls -l</code></h3>
+<div class="cards">
+<div class="card"><h5>Link simbólico (<code>ln -s</code>)</h5><dl><dt>É</dt><dd>Um "atalho" que aponta para o <b>nome</b></dd><dt>Se apagar o original</dt><dd>O link fica <b>quebrado</b></dd><dt>Pode</dt><dd>Apontar para diretório e <b>outro sistema de arquivos</b></dd><dt>No ls -l</dt><dd><code>lrwxrwxrwx</code>: o <b>l</b> indica link (o rwx não diz nada sobre o dono)</dd></dl></div>
+<div class="card"><h5>Hard link (<code>ln</code>)</h5><dl><dt>É</dt><dd>Outro nome para o <b>mesmo inode</b></dd><dt>Se apagar o original</dt><dd>Os dados continuam acessíveis</dd><dt>Não pode</dt><dd>Ser feito para diretório nem cruzar partições</dd></dl></div>
+<div class="card"><h5>1º caractere</h5><dl><dt><code>-</code></dt><dd>Arquivo comum</dd><dt><code>d</code></dt><dd>Diretório</dd><dt><code>l</code></dt><dd>Link simbólico</dd></dl></div>
+</div>
+<h3>Redirecionamento e encadeamento</h3>
+<ul class="arrows">
+<li><span class="from">&gt;  /  &gt;&gt;</span><span class="to-a">→</span><span>sobrescreve / <b>acrescenta</b> no fim (cria se não existir)</span></li>
+<li><span class="from">2&gt;</span><span class="to-a">→</span><span>redireciona só a <b>saída de erro</b></span></li>
+<li><span class="from">cmd1 | cmd2</span><span class="to-a">→</span><span>pipe: a saída de um vira a entrada do outro</span></li>
+<li><span class="from">;  /  &amp;&amp;  /  &amp;</span><span class="to-a">→</span><span>em sequência / só se o anterior der <b>sucesso</b> / em paralelo (background)</span></li>
+<li><span class="from">!!</span><span class="to-a">→</span><span>reexecuta o último comando</span></li>
+</ul>
+<div class="grid2">
+<div class="box"><h4>shutdown</h4><ul class="tight"><li><code>-r</code>: <b>reinicia</b> (reboot)</li><li><code>-h</code>: desliga (halt), não reinicia</li><li><code>-k</code>: só avisa, não desliga</li><li><code>-f</code>/<code>-F</code>: pula / força checagem de disco</li></ul></div>
+<div class="box"><h4>useradd</h4><ul class="tight"><li><code>-c "texto"</code>: comentário/descrição</li><li><code>-d dir</code>: diretório home</li><li><code>-m</code>: <b>cria</b> o home</li><li><code>-g</code> grupo · <code>-s</code> shell · <code>-e</code> expiração</li><li>Senha depois: <code>passwd USUARIO</code></li></ul></div>
+<div class="box"><h4>chroot · alias</h4><ul class="tight"><li><code>chroot</code>: <b>muda o diretório raiz</b> do processo ("chroot jail")</li><li><code>su</code>/<code>sudo</code> é que trocam de usuário</li><li><code>alias l='ls -l'</code>: apelido de comando</li></ul></div>
+</div>
+<div class="box red"><h4>Seus erros neste tema</h4><ul>
+<li><b>CEBRASPE 8</b>: <code>sed 's/windows/linux/' maria &gt; pedro</code> substitui e grava em pedro → <span class="C">Certo</span>.</li>
+<li><b>FGV 2</b>: <code>find . -type f</code> lista caminhos <b>relativos</b> de <b>arquivos regulares</b> (B). <code>-type d</code> é que lista diretórios.</li>
+<li><b>FGV 10</b>: quem fez login recentemente → <code>last</code> (B), e não <code>nice</code>.</li>
+<li><b>FCC 5</b>: as linhas <code>search</code> e <code>nameserver</code> ficam em <code>/etc/resolv.conf</code> (C).</li>
+<li><b>VUNESP 6</b>: avisar e <b>reiniciar</b> em 10 min → <code>shutdown -r 10</code> (D).</li>
+<li><b>VUNESP 10</b>: <code>lrwxrwxrwx</code> = <b>link simbólico</b> (B).</li>
+<li><b>VUNESP 14</b>: <code>chroot</code> altera o <b>diretório raiz</b> (D), e não o usuário da sessão.</li>
+<li><b>MULTIBANCAS 1</b>: criar conta com descrição e home → <code>useradd -c "Descrição" -m USUARIO</code> + <code>passwd USUARIO</code> (A).</li></ul></div>
+<ul class="verdicts">
+<li><span class="badge C">Certo</span><span><code>mkdir -p dir2/dir3/dir4</code> cria os 3 subdiretórios.</span><span class="why">-p cria os pais que faltam.</span></li>
+<li><span class="badge C">Certo</span><span><code>tail arq -n2 | head -n1</code> mostra a penúltima linha.</span><span class="why">tail pega as 2 últimas e head fica com a 1ª delas.</span></li>
+<li><span class="badge C">Certo</span><span><code>watch -n 1 mpstat</code> executa mpstat a cada segundo.</span><span class="why">-n define o intervalo.</span></li>
+<li><span class="badge C">Certo</span><span><code>echo 'umask 227' &gt;&gt; /home/roberto/.bashrc</code> muda o umask só para roberto.</span><span class="why">.bashrc é do usuário e &gt;&gt; acrescenta.</span></li>
+<li><span class="badge C">Certo</span><span><code>lastlog</code> mostra o último login e o IP de origem, se remoto.</span><span class="why">Lê /var/log/lastlog.</span></li>
+<li><span class="badge E">Errado</span><span><code>fdisk -l</code> repara partições danificadas.</span><span class="why">fdisk -l só lista. Quem repara é o fsck.</span></li>
+<li><span class="badge E">Errado</span><span>No <code>vmstat</code>, a coluna id mostra o número do processo.</span><span class="why">id = tempo ocioso (idle) da CPU.</span></li>
+<li><span class="badge E">Errado</span><span><code>find</code> acha o caminho de um comando e <code>which</code> mostra a versão.</span><span class="why">which mostra o caminho. Nenhum dos dois dá a versão.</span></li>
+</ul>
+</div></section>
+
+<section id="rede"><div class="n">02</div><div>
+<h2>Serviços de rede, DNS e segurança</h2>
+<span class="inc hi">67 questões · 7 erros seus</span>
+<h3>Arquivos de configuração (o que mais cai)</h3>
+<ul class="arrows">
+<li><span class="from">/etc/resolv.conf</span><span class="to-a">→</span><span><b>servidores DNS</b> do cliente: <code>domain</code>, <code>search</code>, <code>nameserver</code> (usados na ordem)</span></li>
+<li><span class="from">/etc/hosts</span><span class="to-a">→</span><span>tradução fixa nome ↔ IP, <b>dispensa consulta ao DNS</b></span></li>
+<li><span class="from">/etc/network/interfaces</span><span class="to-a">→</span><span>interfaces no <b>Debian/Ubuntu</b> (usado por ifup/ifdown)</span></li>
+<li><span class="from">/etc/sysconfig/network-scripts/</span><span class="to-a">→</span><span>interfaces no RHEL/CentOS/Rocky</span></li>
+<li><span class="from">/etc/bind/named.conf</span><span class="to-a">→</span><span>servidor DNS BIND (antigo: /etc/named.conf)</span></li>
+<li><span class="from">/etc/exports</span><span class="to-a">→</span><span>diretórios que o <b>NFS</b> exporta</span></li>
+<li><span class="from">/etc/samba/smb.conf</span><span class="to-a">→</span><span>Samba (SMB/CIFS, integração com Windows)</span></li>
+<li><span class="from">/etc/ssh/sshd_config</span><span class="to-a">→</span><span>SSH: <code>Port 22</code>, <code>PermitRootLogin no</code>, <code>PasswordAuthentication no</code></span></li>
+<li><span class="from">/etc/dhcp/dhcpd.conf</span><span class="to-a">→</span><span>servidor DHCP (<b>dhcpd</b> = servidor; dhcpcd = cliente)</span></li>
+<li><span class="from">/etc/squid/squid.conf</span><span class="to-a">→</span><span>proxy Squid</span></li>
+<li><span class="from">httpd.conf · .htaccess</span><span class="to-a">→</span><span>Apache (daemon httpd); .htaccess configura por diretório</span></li>
+<li><span class="from">/etc/postfix/main.cf</span><span class="to-a">→</span><span>Postfix (MTA). Logs em /var/log/maillog ou mail.log</span></li>
+</ul>
+<h3>Como uma consulta DNS anda</h3>
+<div class="flow">
+<div class="step"><h5>Aplicação</h5><p>chama o <b>resolvedor</b></p></div><div class="arrow" aria-hidden="true">→</div>
+<div class="step"><h5>DNS local</h5><p>consulta <b>recursiva</b>: o cliente recebe a resposta final</p></div><div class="arrow" aria-hidden="true">→</div>
+<div class="step"><h5>Raiz → TLD → autoritativo</h5><p>consultas <b>iterativas</b>: cada um indica o próximo</p></div><div class="arrow" aria-hidden="true">→</div>
+<div class="step"><h5>Cache</h5><p>a resposta fica guardada pelo <b>TTL</b></p></div>
+</div>
+<div class="cards">
+<div class="card"><h5>Fatos do DNS</h5><ul><li>Camada de <b>aplicação</b></li><li>Porta <b>53</b></li><li><b>UDP</b> nas consultas, <b>TCP</b> na transferência de zona</li><li>Servidor BIND = daemon <b>named</b></li><li>Ferramenta: <code>nslookup</code></li></ul></div>
+<div class="card"><h5>Resposta autoritativa</h5><ul><li>Vem de servidor <b>primário ou secundário</b> do domínio</li><li>Garantidamente atualizada</li></ul></div>
+<div class="card"><h5>Resposta não autoritativa</h5><ul><li>Vem do <b>cache</b> de um servidor</li><li>Servidor caching-only <b>nunca</b> é autoritativo</li><li>Pode estar desatualizada</li></ul></div>
+</div>
+<h3>Registros (RR)</h3>
+<ul class="arrows">
+<li><span class="from">A / AAAA</span><span class="to-a">→</span><span>nome → <b>IPv4</b> / IPv6</span></li>
+<li><span class="from">CNAME</span><span class="to-a">→</span><span>apelido (nome canônico)</span></li>
+<li><span class="from">MX</span><span class="to-a">→</span><span>servidor de <b>e-mail</b> do domínio</span></li>
+<li><span class="from">NS</span><span class="to-a">→</span><span>servidor de nomes do domínio</span></li>
+<li><span class="from">PTR</span><span class="to-a">→</span><span>DNS <b>reverso</b> (IP → nome)</span></li>
+<li><span class="from">SOA</span><span class="to-a">→</span><span>início de autoridade da zona</span></li>
+<li><span class="from">TXT · SPF · SRV</span><span class="to-a">→</span><span>texto livre · política de envio de e-mail · serviços</span></li>
+</ul>
+<h3>Ferramentas de rede</h3>
+<ul class="arrows">
+<li><span class="from">ping</span><span class="to-a">→</span><span>ICMP; <code>-c</code> quantidade, <code>-i</code> intervalo</span></li>
+<li><span class="from">traceroute</span><span class="to-a">→</span><span>rota/saltos (no Windows: <b>tracert</b>); <code>-m</code> máx. saltos</span></li>
+<li><span class="from">netstat -tuln</span><span class="to-a">→</span><span>TCP, UDP, portas em escuta, numérico; <code>-r</code> rotas, <code>-i</code> interfaces</span></li>
+<li><span class="from">ip a · ip route · ip link set dev eth0 up</span><span class="to-a">→</span><span>substituto moderno de ifconfig e route</span></li>
+<li><span class="from">ifconfig eth0 up/down</span><span class="to-a">→</span><span>configura interface (legado)</span></li>
+<li><span class="from">ifup / ifdown</span><span class="to-a">→</span><span>ativa / desativa conforme os arquivos de configuração</span></li>
+<li><span class="from">route add -net … gw …</span><span class="to-a">→</span><span>rota estática (com <code>-net</code> para rede)</span></li>
+<li><span class="from">nmap · tcpdump</span><span class="to-a">→</span><span>varredura de portas · captura de pacotes (sniffer, exige root)</span></li>
+</ul>
+<h3>iptables (Netfilter)</h3>
+<div class="cards">
+<div class="card"><h5>Cadeias</h5><dl><dt>INPUT</dt><dd>chegando para a máquina</dd><dt>OUTPUT</dt><dd>saindo da máquina</dd><dt>FORWARD</dt><dd>só passando (roteado)</dd></dl></div>
+<div class="card"><h5>Opções</h5><dl><dt>-A / -D</dt><dd>adiciona / apaga regra</dd><dt>-L / -F</dt><dd>lista / limpa tudo</dd><dt>-s / -d</dt><dd>IP de origem / destino</dd><dt>-i / -o</dt><dd>interface de entrada / saída</dd><dt>-p · --dport</dt><dd>protocolo · porta de destino</dd></dl></div>
+<div class="card"><h5>Ações (-j)</h5><dl><dt>ACCEPT</dt><dd>aceita</dd><dt>DROP</dt><dd>descarta em silêncio</dd><dt>REJECT</dt><dd>recusa <b>avisando</b> a origem</dd></dl><p class="note">Vale o <b>primeiro</b> match.</p></div>
+</div>
+<div class="cards">
+<div class="card"><h5>Portas</h5><ul><li>FTP <b>20</b> (dados) / <b>21</b> (controle)</li><li>SSH 22 · SMTP 25 · DNS 53</li><li>POP3 110 · IMAP 143 · LDAP 389</li></ul></div>
+<div class="card"><h5>NFS</h5><ul><li>Cliente-servidor, <b>stateless</b>, usa RPC</li><li>Transporte padrão <b>UDP</b> (aceita TCP)</li><li>Daemons: nfsd, mountd, portmap</li><li><code>exportfs -r</code> reexporta; <code>-ua</code> desexporta tudo</li></ul></div>
+<div class="card"><h5>SELinux (MAC)</h5><ul><li>Modos: <b>enforcing</b> (bloqueia), <b>permissive</b> (só registra), disabled</li><li>Políticas: <b>targeted</b> (padrão), MLS, MCS</li></ul></div>
+</div>
+<div class="box red"><h4>Seus erros neste tema</h4><ul>
+<li><b>CEBRASPE 10</b>: "DNS no nível de aplicação <b>da camada de transporte</b> do TCP" → <span class="E">Errado</span>. O DNS é da camada de <b>aplicação</b>.</li>
+<li><b>FCC 2</b>: arquivo que dispensa a consulta ao DNS → <code>/etc/hosts</code> (D).</li>
+<li><b>MULTIBANCAS 1</b>: arquivo que define os servidores DNS → <code>/etc/resolv.conf</code> (C), e não /etc/hosts.</li>
+<li><b>MULTIBANCAS 5</b>: arquivos de rede que existem → <code>/etc/network/interfaces</code> e <code>/etc/resolv.conf</code> (C).</li>
+<li><b>MULTIBANCAS 13</b>: rede no Debian 10 → <code>/etc/network/interfaces</code> (D). A ordem é <b>network/interfaces</b>.</li>
+<li><b>MULTIBANCAS 25</b>: resposta <b>non-authoritative</b> = veio de um <b>cache</b> de DNS (A). O arquivo de zona do primário é autoritativo.</li>
+<li><b>MULTIBANCAS 33</b>: RR que liga um nome a um IPv4 = <b>A</b> (D). NS indica servidor de nomes.</li></ul></div>
+<ul class="verdicts">
+<li><span class="badge E">Errado</span><span>As atualizações entre servidores DNS usam UDP e as consultas usam TCP.</span><span class="why">É o contrário: consultas por UDP, transferência de zona por TCP.</span></li>
+<li><span class="badge C">Certo</span><span>Para achar o servidor de e-mail do destinatário, o SMTP consulta os registros MX.</span><span class="why">MX = mail exchange.</span></li>
+<li><span class="badge E">Errado</span><span><code>route add 192.168.1.0 netmask … gw 192.168.1.1</code> envia o tráfego da rede /24 pelo gateway.</span><span class="why">O gateway 192.168.1.1 está dentro da própria rede 192.168.1.0/24, por isso o professor considera a afirmação incoerente. Hoje se usa <code>ip route add 192.168.1.0/24 via …</code>.</span></li>
+<li><span class="badge E">Errado</span><span>No Bind, para escutar a porta 53 usa-se <code>Listening 53 { any;};</code></span><span class="why">Essa diretiva não existe, e o named.conf é para zonas (gabarito Errada).</span></li>
+<li><span class="badge E">Errado</span><span><code>chkconfig smb on</code> inicia o Samba e <code>service smb start</code> o carrega no boot.</span><span class="why">Está invertido: chkconfig liga no boot e service start inicia agora.</span></li>
+<li><span class="badge C">Certo</span><span><code>ifup</code> e <code>ifdown</code> ativam e desativam uma interface de rede.</span><span class="why">Ambos leem /etc/network/interfaces.</span></li>
+</ul>
+</div></section>
+
+<section id="base"><div class="n">03</div><div>
+<h2>Conceitos básicos do Linux</h2>
+<span class="inc hi">60 questões · 3 erros seus</span>
+<h3>Camadas</h3>
+<div class="flow">
+<div class="step"><h5>Aplicações</h5><p>programas do usuário</p></div><div class="arrow" aria-hidden="true">→</div>
+<div class="step"><h5>Shell / servidor de janelas</h5><p>Shell = <b>interpretador de comandos</b> (sh, bash, csh, ksh, zsh). GUI: GNOME, KDE…</p></div><div class="arrow" aria-hidden="true">→</div>
+<div class="step"><h5>Kernel</h5><p><b>Monolítico</b>, o único que fala com o hardware. Não interpreta comandos.</p></div><div class="arrow" aria-hidden="true">→</div>
+<div class="step"><h5>Hardware</h5><p>disco, teclado, vídeo…</p></div>
+</div>
+<div class="cards">
+<div class="card"><h5>Módulos do kernel</h5><ul><li>Carregados <b>só quando requisitados</b></li><li>Ficam em <code>/lib/modules/versão/</code> (e <b>não</b> em /boot)</li><li><code>uname -a</code>: versão do kernel</li><li>Compilar o kernel permite tirar drivers inúteis ou pôr novos</li></ul></div>
+<div class="card"><h5>Características</h5><ul><li><b>Multitarefa</b> (pseudoparalelismo) e <b>multiusuário</b> (<code>who</code>)</li><li>Interativo (não é de tempo real crítico)</li><li>Muito portável (de relógio a mainframe)</li><li>cgroups: limitam CPU, RAM e E/S (base dos containers)</li></ul></div>
+</div>
+<h3>Boot</h3>
+<div class="flow">
+<div class="step"><h5>BIOS/MBR ou UEFI</h5><p>1º estágio: acha a partição inicializável</p></div><div class="arrow" aria-hidden="true">→</div>
+<div class="step"><h5>Bootloader (GRUB/LILO)</h5><p>2º estágio, em <code>/boot</code>: carrega o <b>kernel</b> e o initrd</p></div><div class="arrow" aria-hidden="true">→</div>
+<div class="step"><h5>Kernel</h5><p><b>Ele mesmo se descompacta</b>, detecta o hardware e carrega drivers</p></div><div class="arrow" aria-hidden="true">→</div>
+<div class="step"><h5>init / systemd</h5><p>PID 1: sobe os serviços (units)</p></div>
+</div>
+<div class="grid2">
+<div class="box"><h4>systemd e systemctl</h4><ul class="tight"><li>Units: service, timer, mount, target, socket, path, swap, snapshot</li><li><code>systemctl start/stop/restart/reload/status</code>: agora</li><li><code>systemctl enable/disable</code>: <b>no boot</b></li></ul></div>
+<div class="box"><h4>Primeiro e segundo plano</h4><ul class="tight"><li><code>cmd &amp;</code>: já roda em <b>background</b></li><li><b>Ctrl+Z</b> suspende → <code>bg</code> manda para o background</li><li><code>jobs</code> lista · <code>fg %2</code> traz de volta</li><li>Daemons rodam em background (nome termina em "d")</li></ul></div>
+</div>
+<h3>Crontab</h3>
+<div class="flow">
+<div class="step"><h5>min</h5><p>0–59</p></div><div class="arrow" aria-hidden="true">→</div>
+<div class="step"><h5>hora</h5><p>0–23</p></div><div class="arrow" aria-hidden="true">→</div>
+<div class="step"><h5>dia do mês</h5><p>1–31</p></div><div class="arrow" aria-hidden="true">→</div>
+<div class="step"><h5>mês</h5><p>1–12</p></div><div class="arrow" aria-hidden="true">→</div>
+<div class="step"><h5>dia da semana</h5><p>0–6 (1-5 = seg–sex)</p></div><div class="arrow" aria-hidden="true">→</div>
+<div class="step"><h5>comando</h5><p><code>crontab -l</code> lista</p></div>
+</div>
+<h3>Sistemas de arquivos</h3>
+<div class="cards">
+<div class="card"><h5>ext2</h5><dd>Sem journaling. Unidade = bloco (1024, 2048, 4096)</dd></div>
+<div class="card"><h5>ext3</h5><dd><b>Journaling</b>. Modos: <b>ordered</b> (padrão), writeback (só metadados), journal (o mais seguro e lento)</dd></div>
+<div class="card"><h5>ext4</h5><dd>Endereçamento de 48 bits, volumes e arquivos até 1 EB</dd></div>
+<div class="card"><h5>Outros</h5><dd>ReiserFS (1º com journaling) · XFS (64 bits) · Btrfs (copy-on-write) · GFS (cluster) · <b>Swap</b> = partição própria</dd></div>
+</div>
+<h3>Diretórios (FHS)</h3>
+<ul class="arrows">
+<li><span class="from">/etc</span><span class="to-a">→</span><span><b>configuração</b></span></li>
+<li><span class="from">/bin · /sbin</span><span class="to-a">→</span><span>comandos básicos · binários de sistema do root</span></li>
+<li><span class="from">/boot</span><span class="to-a">→</span><span>imagem do kernel e initrd</span></li>
+<li><span class="from">/lib</span><span class="to-a">→</span><span>bibliotecas e <b>módulos do kernel</b></span></li>
+<li><span class="from">/home · /root</span><span class="to-a">→</span><span>usuários comuns · home do root (≠ raiz /)</span></li>
+<li><span class="from">/var · /var/log</span><span class="to-a">→</span><span>dados variáveis · <b>logs</b></span></li>
+<li><span class="from">/usr · /opt · /tmp · /proc · /dev · /mnt</span><span class="to-a">→</span><span>aplicativos · opcionais · temporários · info do kernel · dispositivos · montagem</span></li>
+</ul>
+<h3>/etc/passwd × /etc/shadow</h3>
+<div class="cards">
+<div class="card"><h5>/etc/passwd</h5><dd><code>estrategia:x:1010:1010:Nome:/home/estrategia:/bin/bash</code><br>usuário · <b>x</b> (senha está no shadow) · UID · GID · comentário · home · shell</dd></div>
+<div class="card"><h5>/etc/shadow</h5><dd><b>hash</b> da senha + datas: última troca, mínimo, máximo, aviso, inativo, expiração</dd></div>
+<div class="card"><h5>Outros em /etc</h5><dd>group · profile (login de todos) · syslog.conf · ldap.conf</dd></div>
+</div>
+<h3>Gerenciadores de pacotes</h3>
+<div class="cards">
+<div class="card"><h5>APT (Debian/Ubuntu)</h5><ul><li><code>update</code>: atualiza a <b>lista</b> de repositórios</li><li><code>upgrade</code>: atualiza pacotes instalados</li><li><code>dist-upgrade</code> / <code>full-upgrade</code>: atualização completa</li><li><code>install</code> · <code>remove</code> · <code>autoremove</code> · <code>apt-cache search</code></li><li>Repositórios em <code>/etc/apt/sources.list</code></li></ul></div>
+<div class="card"><h5>DPKG (.deb)</h5><ul><li><b>Não</b> resolve dependências</li><li><code>-i</code> instala · <code>-r</code> remove (mantém config) · <code>-P</code> remove tudo · <code>-l</code> lista</li></ul></div>
+<div class="card"><h5>RPM (.rpm, Red Hat)</h5><ul><li><code>-q</code> <b>consulta se está instalado</b></li><li><code>-ivh</code> instala · <code>-U</code> atualiza · <code>-e</code> remove</li></ul></div>
+<div class="card"><h5>YUM / DNF (RHEL, CentOS)</h5><ul><li>Resolvem dependências do RPM</li><li><code>yum upgrade</code> = update + remove obsoletos</li><li>Instala a partir de URL (o APT não faz isso)</li><li>DNF substitui o YUM (RHEL 8+). zypper = SUSE</li></ul></div>
+</div>
+<div class="box red"><h4>Seus erros neste tema</h4><ul>
+<li><b>FGV 2</b> (CentOS): saber se o httpd está instalado e qual a versão → <code>rpm -q httpd</code> (A). <code>apt-get</code> nem existe no CentOS.</li>
+<li><b>VUNESP 1</b>: executar em segundo plano → comando <b>seguido de &amp;</b> (D). O <code>bg</code> só funciona depois de suspender com Ctrl+Z.</li>
+<li><b>MULTIBANCAS 20</b>: certas I, III e IV (D). A II é falsa porque os módulos ficam em /lib/modules.</li></ul></div>
+<ul class="verdicts">
+<li><span class="badge E">Errado</span><span>No boot, carregar e descompactar o kernel é tarefa do carregador de 1º estágio.</span><span class="why">O 1º estágio só acha o 2º (GRUB), e o kernel se descompacta sozinho.</span></li>
+<li><span class="badge E">Errado</span><span>O kernel interpreta os comandos digitados no terminal.</span><span class="why">Quem interpreta é o shell.</span></li>
+<li><span class="badge E">Errado</span><span><code>apt-get upgrade</code> lista as atualizações para escolher uma a uma.</span><span class="why">Ele atualiza todos os pacotes de uma vez.</span></li>
+<li><span class="badge C">Certo</span><span><code>yum update samba</code> atualiza o samba se ele já estiver instalado.</span><span class="why">—</span></li>
+<li><span class="badge C">Certo</span><span>Para registrar o RHEL no Subscription Management é preciso ser root e rodar <code>subscription-manager register</code>.</span><span class="why">—</span></li>
+<li><span class="badge E">Errado</span><span>Linux e Windows são sistemas de tempo real crítico.</span><span class="why">São sistemas interativos.</span></li>
+<li><span class="badge E">Errado</span><span>O root acessa arquivos de outros usuários, exceto os de administradores.</span><span class="why">O root acessa tudo.</span></li>
+<li><span class="badge E">Errado</span><span>Não é possível instalar o Linux pela rede.</span><span class="why">Dá para instalar via PXE + TFTP + DHCP.</span></li>
+</ul>
+</div></section>
+
+<section id="perm"><div class="n">04</div><div>
+<h2>Permissões, montagem e superusuário</h2>
+<span class="inc hi">50 questões · 3 erros seus</span>
+<h3>Ler permissões em octal</h3>
+<div class="flow">
+<div class="step"><h5>r = 4</h5><p>leitura</p></div><div class="arrow" aria-hidden="true">+</div>
+<div class="step"><h5>w = 2</h5><p>escrita</p></div><div class="arrow" aria-hidden="true">+</div>
+<div class="step"><h5>x = 1</h5><p>execução</p></div><div class="arrow" aria-hidden="true">→</div>
+<div class="step"><h5>U G O</h5><p>dono · grupo · outros. Ex.: <code>751</code> = rwx r-x --x</p></div>
+</div>
+<div class="cards">
+<div class="card"><h5>setuid = 4</h5><dd>Executa com o privilégio do <b>dono</b> (ex.: passwd). Aparece <b>s</b> no x do dono</dd></div>
+<div class="card"><h5>setgid = 2</h5><dd>Executa com o grupo do dono. Em diretório, os arquivos novos herdam o grupo. Aparece <b>s</b> no x do grupo</dd></div>
+<div class="card"><h5>sticky bit = 1</h5><dd>Em diretório, só o dono apaga o próprio arquivo (ex.: <code>/tmp</code>). Aparece <b>t</b> no x dos outros</dd></div>
+</div>
+<h3>chmod simbólico, passo a passo (seu erro)</h3>
+<div class="flow">
+<div class="step"><h5>a-rwx</h5><p>zera tudo: --- --- ---</p></div><div class="arrow" aria-hidden="true">→</div>
+<div class="step"><h5>u+r</h5><p>dono = r-- = <b>4</b></p></div><div class="arrow" aria-hidden="true">→</div>
+<div class="step"><h5>g+rw</h5><p>grupo = rw- = <b>6</b></p></div><div class="arrow" aria-hidden="true">→</div>
+<div class="step"><h5>outros</h5><p>nada = <b>0</b> → <code>chmod 460</code></p></div>
+</div>
+<ul class="arrows">
+<li><span class="from">chmod +x arq</span><span class="to-a">→</span><span>sem u/g/o, aplica a <b>todos</b></span></li>
+<li><span class="from">chmod 0751</span><span class="to-a">→</span><span>1º dígito = especiais (0 = nenhuma)</span></li>
+<li><span class="from">chown evandro:inf /teste</span><span class="to-a">→</span><span>troca <b>dono e grupo</b>; <code>-R</code> recursivo</span></li>
+<li><span class="from">chgrp -R inf /teste</span><span class="to-a">→</span><span>troca só o grupo</span></li>
+<li><span class="from">setfacl -m u:evandro:rwx aulas</span><span class="to-a">→</span><span><b>ACL</b> para um usuário específico; <code>getfacl</code> consulta; <code>+</code> no ls -l indica ACL</span></li>
+</ul>
+<div class="box"><h4>umask</h4>Permissão final = <b>777 − máscara</b> (diretório) ou <b>666 − máscara</b> (arquivo; o x nunca vem por padrão). Se der negativo, vale 0.<br>Ex.: umask <b>022</b> → diretório 755 e arquivo 644. Umask 447 → diretório 330 e arquivo 220.</div>
+<h3>Montagem</h3>
+<div class="flow">
+<div class="step"><h5>mount</h5><p>sem argumentos: lista o que está montado</p></div><div class="arrow" aria-hidden="true">→</div>
+<div class="step"><h5>-t tipo</h5><p>ext4, <b>vfat</b> (FAT do DOS/Windows), ntfs, nfs, cifs, iso9660…</p></div><div class="arrow" aria-hidden="true">→</div>
+<div class="step"><h5>dispositivo</h5><p><code>/dev/sdc3</code></p></div><div class="arrow" aria-hidden="true">→</div>
+<div class="step"><h5>ponto</h5><p><code>/teste</code> (precisa existir)</p></div>
+</div>
+<div class="cards">
+<div class="card"><h5>/etc/fstab</h5><dd>Sistemas de arquivos que podem ser montados, inclusive <b>automaticamente no boot</b>. <code>mount -a</code> monta tudo (exceto noauto)</dd></div>
+<div class="card"><h5>/etc/mtab</h5><dd>O que está montado <b>agora</b></dd></div>
+<div class="card"><h5>-o opções</h5><dd>ro · rw · exec · <b>noexec</b> · nosuid · nodev · remount. <code>umount</code> não desmonta se estiver ocupado</dd></div>
+</div>
+<h3>Superusuário</h3>
+<div class="cards">
+<div class="card"><h5>root</h5><ul><li><b>UID 0</b>; prompt <code>#</code> (usuário comum: <code>$</code>)</li><li>Dá para <b>renomear</b> o root e criar outras contas com UID 0 (não recomendado, mas o Linux permite)</li><li>UIDs <b>repetidos são possíveis</b></li></ul></div>
+<div class="card"><h5>su</h5><ul><li>Troca de usuário (pede a senha <b>do usuário-alvo</b>)</li><li>Registra quem virou root, mas não os comandos</li></ul></div>
+<div class="card"><h5>sudo</h5><ul><li>Pede a senha <b>do próprio usuário</b></li><li>Regras em <code>/etc/sudoers</code>; <b>registra os comandos</b> no log</li><li><code>-u usuário</code> · <code>-g grupo</code></li></ul></div>
+</div>
+<div class="box red"><h4>Seus erros neste tema</h4><ul>
+<li><b>CEBRASPE 6</b>: <code>chmod a-rxw,u+r,g+rw</code> = <b>460</b> (C). Você marcou 046, que inverteu dono e outros.</li>
+<li><b>CEBRASPE 10</b>: <code>mount -t vfat</code> monta partição DOS/Windows (FAT) dentro da árvore do Linux → <span class="C">Certo</span>.</li>
+<li><b>FCC 1</b>: montagem automática no boot (CIFS) → <code>/etc/fstab</code> (A).</li></ul></div>
+<ul class="verdicts">
+<li><span class="badge E">Errado</span><span><code>chmod 0177</code> dá rwx só ao dono.</span><span class="why">Isso seria 0700. O 177 dá --x ao dono e rwx aos demais.</span></li>
+<li><span class="badge E">Errado</span><span>O Linux impede UIDs iguais, exceto para o root.</span><span class="why">O Linux não impede.</span></li>
+<li><span class="badge C">Certo</span><span>O Linux não impede renomear o superusuário nem criar outras contas com UID 0.</span><span class="why">Não é recomendado, mas é possível.</span></li>
+<li><span class="badge C">Certo</span><span><code>mount -t ext4 /dev/sdc3 /teste</code> monta a partição ext4.</span><span class="why">Ordem: tipo, dispositivo, ponto.</span></li>
+<li><span class="badge E">Errado</span><span><code>chmod -x arq</code> remove todas as permissões do arquivo.</span><span class="why">Tira só o x. Para zerar: <code>chmod 000</code> ou <code>a-rwx</code>.</span></li>
+<li><span class="badge C">Certo</span><span>É possível dar permissões diferentes ao dono, ao grupo e aos demais.</span><span class="why">Modelo UGO.</span></li>
+</ul>
+</div></section>
+
+<section id="proc"><div class="n">05</div><div>
+<h2>Gerenciamento de processos</h2>
+<span class="inc">31 questões · 3 erros seus</span>
+<div class="flow">
+<div class="step"><h5>fork()</h5><p>clona o processo; devolve <b>0 ao filho</b> e o <b>PID do filho ao pai</b></p></div><div class="arrow" aria-hidden="true">→</div>
+<div class="step"><h5>filho</h5><p>tem PID próprio; PPID = PID do pai; memória <b>separada</b></p></div><div class="arrow" aria-hidden="true">→</div>
+<div class="step"><h5>pai morre antes</h5><p>o filho vira <b>órfão</b> e é adotado pelo <b>init (PID 1)</b></p></div>
+</div>
+<div class="cards">
+<div class="card"><h5>Prioridade (nice)</h5><ul><li>Vai de <b>−20 (maior prioridade)</b> a <b>19 (menor)</b>; padrão 0</li><li><code>nice -n 5 cmd</code>: <b>antes</b> de executar</li><li><code>renice -6 PID</code>, <code>renice 8 -u user</code>: processo <b>já rodando</b></li><li>O usuário comum só pode <b>aumentar</b> o nice</li></ul></div>
+<div class="card"><h5>Estados</h5><dl><dt>Executável</dt><dd>pronto, esperando a CPU</dd><dt>Dormente</dt><dd>bloqueado, esperando E/S</dd><dt>Zumbi</dt><dd>terminou, mas o status ainda não foi coletado</dd><dt>Parado</dt><dd>suspenso (STOP/TSTP); volta com CONT</dd></dl></div>
+</div>
+<h3>Sinais (kill envia qualquer sinal)</h3>
+<ul class="arrows">
+<li><span class="from">1 HUP</span><span class="to-a">→</span><span>reiniciar / recarregar</span></li>
+<li><span class="from">2 INT</span><span class="to-a">→</span><span>interromper (<b>Ctrl+C</b>)</span></li>
+<li><span class="from">3 QUIT</span><span class="to-a">→</span><span>abandonar</span></li>
+<li><span class="from">9 KILL</span><span class="to-a">→</span><span>matar à força (não pode ser tratado)</span></li>
+<li><span class="from">15 TERM</span><span class="to-a">→</span><span>término, <b>padrão</b> do kill</span></li>
+<li><span class="from">kill PID · killall nome</span><span class="to-a">→</span><span>por número · por nome (todos com aquele nome)</span></li>
+</ul>
+<h3>Monitoramento</h3>
+<ul class="arrows">
+<li><span class="from">ps aux</span><span class="to-a">→</span><span>todos (a), com usuário (u), sem terminal (x); <code>-f</code> árvore, <code>-l</code> mais campos, <code>-ef | grep</code></span></li>
+<li><span class="from">top</span><span class="to-a">→</span><span>tempo real; colunas PID, PR, <b>NI</b>, VIRT, RES, SHR, %CPU, %MEM, <b>TIME+</b> = tempo total de CPU desde o início</span></li>
+<li><span class="from">htop · pstree · jobs</span><span class="to-a">→</span><span>top visual · árvore de processos · jobs em background</span></li>
+</ul>
+<div class="box"><h4>Comunicação entre processos (IPC)</h4>Pipe (<code>|</code>) · FIFO (named pipe, tem nome) · fila de mensagens · memória compartilhada · semáforo · socket · <b>sinais</b> (os mais cobrados).<br><b>Pegadinha:</b> o "canal em que um processo escreve um fluxo de bytes para outro ler" é o <b>pipe</b>, e não a interrupção de software.</div>
+<div class="box red"><h4>Seus erros neste tema</h4><ul>
+<li><b>CEBRASPE 9</b>: <code>renice -10 -u jdev -p 650</code> <b>muda a prioridade</b>, não reinicia nada → <span class="E">Errado</span>.</li>
+<li><b>FGV 6</b>: I certa (órfão é adotado pelo init), II errada (zumbi é o processo tentando se destruir), III certa (−20 a 19, menor número = maior prioridade) → <b>I e III</b>.</li>
+<li><b>VUNESP 5</b>: TIME+ do top = <b>tempo total de CPU desde o início</b> (B), e não porcentagem.</li></ul></div>
+<ul class="verdicts">
+<li><span class="badge E">Errado</span><span><code>nice</code> altera a prioridade de um processo já iniciado.</span><span class="why">Para processo já iniciado é o renice.</span></li>
+<li><span class="badge E">Errado</span><span>O filho percebe as mudanças nas variáveis do pai, pois compartilham a memória privada.</span><span class="why">Depois do fork, cada um tem a sua cópia.</span></li>
+<li><span class="badge C">Certo</span><span>Um usuário comum pode encerrar o próprio processo com kill.</span><span class="why">Não é exclusividade do root.</span></li>
+<li><span class="badge C">Certo</span><span>Um programa travado pode ser encerrado com kill a partir de outro terminal.</span><span class="why">—</span></li>
+<li><span class="badge E">Errado</span><span>Cada usuário só pode ter um processo ativo por vez.</span><span class="why">O Linux é multitarefa e multiusuário.</span></li>
+</ul>
+</div></section>
+
+<section id="shell"><div class="n">06</div><div>
+<h2>Shell script</h2>
+<span class="inc">30 questões · 3 erros seus</span>
+<div class="flow">
+<div class="step"><h5>Criar</h5><p><code>vi script.sh</code> ou <code>touch</code> (a extensão .sh é só convenção)</p></div><div class="arrow" aria-hidden="true">→</div>
+<div class="step"><h5>Permitir</h5><p><code>chmod +x script.sh</code>; para executar basta o <b>x</b>, não precisa de w</p></div><div class="arrow" aria-hidden="true">→</div>
+<div class="step"><h5>Shebang</h5><p><code>#!/bin/bash</code> na 1ª linha; <code>#</code> = comentário</p></div><div class="arrow" aria-hidden="true">→</div>
+<div class="step"><h5>Executar</h5><p><code>./script.sh</code> ou <code>sh script.sh</code>; <code>sh -x</code> = <b>depuração</b></p></div>
+</div>
+<h3>Variáveis especiais</h3>
+<ul class="arrows">
+<li><span class="from">$0</span><span class="to-a">→</span><span>nome do script</span></li>
+<li><span class="from">$1, $2…</span><span class="to-a">→</span><span>1º, 2º argumento</span></li>
+<li><span class="from">$#</span><span class="to-a">→</span><span>quantidade de argumentos</span></li>
+<li><span class="from">$@ · $*</span><span class="to-a">→</span><span>todos os argumentos</span></li>
+<li><span class="from">$?</span><span class="to-a">→</span><span>status do último comando: <b>0 = sucesso</b>, diferente de 0 = erro (vai de 0 a 255)</span></li>
+</ul>
+<div class="cards">
+<div class="card"><h5>Variáveis e contas</h5><ul><li><code>nome="Maria"</code>, <b>sem espaço</b> em volta do =</li><li>Uso: <code>$nome</code>; <code>exit x</code> ≠ <code>exit $x</code></li><li><code>$((idade + 1))</code> e <code>let j=k**i</code> (<code>**</code> = potência)</li><li>Arrays: <code>${v[0]}</code>, <code>${v[@]}</code>, <code>${#v[@]}</code></li><li>Substring: <code>${frase:7:6}</code></li></ul></div>
+<div class="card"><h5>Comparar inteiros</h5><dl><dt>-eq / -ne</dt><dd>igual / diferente</dd><dt>-gt / -ge</dt><dd>maior / maior ou igual</dd><dt>-lt / -le</dt><dd>menor / menor ou igual</dd><dt>&lt; &gt;</dt><dd>só dentro de <code>(( ))</code></dd></dl></div>
+<div class="card"><h5>Estruturas</h5><ul><li><code>if [ ]; then … fi</code></li><li><code>while [ ]; do … done</code>: enquanto for verdadeira</li><li><code>until</code>: enquanto for <b>falsa</b></li><li><code>for x in …; do … done</code> · <code>case … esac</code></li><li><code>trap 'cmd' SIGINT</code>: trata sinal · <code>getopts</code>: lê opções</li></ul></div>
+<div class="card"><h5>Aspas e echo</h5><ul><li>Aspas <b>simples</b> = literal (não expande <code>$var</code>)</li><li>Aspas <b>duplas</b> = expande</li><li><code>echo -n</code>: sem quebra de linha</li><li><code>\</code> no fim da linha: continua o comando na linha seguinte</li></ul></div>
+</div>
+<div class="box red"><h4>Seus erros neste tema</h4><ul>
+<li><b>FCC 6</b>: verificar erros em um script → <code>sh -x sanasa.sh</code> (A), modo de depuração.</li>
+<li><b>MULTIBANCAS 5</b>: <code>i=3; k=2; let j=k**i</code> → 2³ = <b>8</b> (C).</li>
+<li><b>MULTIBANCAS 9</b>: <code>exit x</code> (sem $) → erro "<b>numeric argument required</b>" na linha 4 (B). Antes, o script imprime "( ". Como falhou, o <code>&amp;&amp; echo " fim"</code> não roda.</li></ul></div>
+<ul class="verdicts">
+<li><span class="badge E">Errado</span><span>Se <code>$?</code> for 1, o último comando teve sucesso.</span><span class="why">Sucesso é 0.</span></li>
+<li><span class="badge E">Errado</span><span>Encadeiam-se comandos com o operador <code>+</code>.</span><span class="why">Usa-se ; &amp;&amp; | ou &amp;.</span></li>
+<li><span class="badge E">Errado</span><span>Para executar um .sh é preciso ter permissão de escrita.</span><span class="why">É preciso ter permissão de execução (x).</span></li>
+<li><span class="badge C">Certo</span><span><code>echo texto \</code> + continuação na linha seguinte imprime tudo em uma linha só.</span><span class="why">A barra junta as linhas.</span></li>
+<li><span class="badge C">Certo</span><span>Em diretório, r permite listar (ls), w permite criar e apagar, e x permite executar o script.</span><span class="why">—</span></li>
+</ul>
+</div></section>
+
+<section id="bsd"><div class="n">07</div><div>
+<h2>FreeBSD</h2>
+<span class="inc">4 questões · 1 erro seu</span>
+<div class="cards">
+<div class="card"><h5>Origem e licença</h5><ul><li>Derivado do <b>BSD</b> (Berkeley), de 1993</li><li>Licença <b>BSD</b>, permissiva. O Linux usa GPL</li><li>É um sistema completo (kernel + userland). O Linux é só o kernel</li></ul></div>
+<div class="card"><h5>Jail</h5><ul><li>Virtualização leve que <b>compartilha o kernel</b> do host</li><li>Definida por: <b>subárvore de diretórios + nome de host + endereço IP + comando</b></li><li>Ferramentas: jail, jexec, ezjail, iocage</li></ul></div>
+<div class="card"><h5>Sistemas de arquivos</h5><ul><li><b>ZFS</b>: volume integrado, checksum, snapshots, RAID-Z, copy-on-write</li><li><b>UFS2</b>: até 16 EB, timestamps de 64 bits, snapshots</li></ul></div>
+<div class="card"><h5>Administração</h5><ul><li>Pacotes: <code>pkg install</code>, ports collection</li><li><code>freebsd-update fetch/install</code></li><li>Rede e serviços em <code>/etc/rc.conf</code>; <code>sysrc sshd_enable="YES"</code></li></ul></div>
+</div>
+<div class="box red"><h4>Erro seu (MULTIBANCAS 1)</h4>Os elementos da jail são <b>2, 3, 4 e 5</b>: subárvore de diretórios, nome de host, IP e comando (E). "Um conjunto de arquivos" não está na definição.</div>
+</div></section>
+
+<section id="treino"><div class="n">C/E</div><div>
+<h2>Treino final</h2>
+<span class="inc hi">Responda de cabeça e clique para ver o gabarito</span>
+<div id="flash"></div>
+</div></section>
+</main>
+<div class="wrap"><footer>Montado a partir da Aula 00 de Sistemas Operacionais do Estratégia Concursos (BACEN, prof. Evandro Dalla Vecchia): teoria das p. 10–124, comentários das p. 125–315 e suas marcações nas listas das p. 316–444. Os gabaritos foram conferidos com as páginas de GABARITO de cada lista.</footer></div>
+
+<script>
+{
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const E=[
+ ['cmd','CEBRASPE 8 · Comandos','PG-DF · 2021',"sed 's/windows/linux/' maria > pedro substitui windows por linux e grava em pedro.",'Errado','Certo','s/velho/novo/ substitui e o > manda o resultado para o arquivo.'],
+ ['cmd','FGV 2 · Comandos','TJ-BA · 2015','O que find . -type f escreve na saída padrão?','D) caminhos relativos dos diretórios','B) caminhos relativos dos arquivos regulares','-type f = arquivos; -type d = diretórios. O ponto gera caminhos relativos.'],
+ ['cmd','FGV 10 · Comandos','SEAD-AP · 2022','Utilitário que mostra quem fez login recentemente.','C) nice','B) last','last = últimos logins. nice = prioridade.'],
+ ['cmd','FCC 5 · Comandos','METRÔ-SP · 2019','Arquivo com "search localdomain / nameserver 8.8.8.8".','B) nano /conf/dns.conf','C) vi /etc/resolv.conf','Configuração do resolvedor DNS = /etc/resolv.conf.'],
+ ['cmd','VUNESP 6 · Comandos','Câm. M. Alto · 2019','Avisar os usuários e reiniciar o servidor em 10 minutos com shutdown.','E) -t 10','D) -r 10','-r reinicia, -h desliga, -k só avisa.'],
+ ['cmd','VUNESP 10 · Comandos','PRUDENCO · 2022','ls -l mostra lrwxrwxrwx. Trata-se de um…','D) arquivo executável de comando','B) link simbólico','O 1º caractere l = link. O rwx não indica script nem dono.'],
+ ['cmd','VUNESP 14 · Comandos','UNICAMP · 2022','Finalidade do chroot.','B) trocar o usuário da sessão','D) alterar o diretório raiz (ambiente isolado)','chroot = change root = chroot jail.'],
+ ['cmd','MULTIBANCAS 1 · Comandos','IF-MG · 2025','Criar conta com home automático, descrição e senha.','D) useradd -d … -u …','A) useradd -c "Descrição" -m USUARIO; passwd USUARIO','-c comentário, -m cria o home, a senha vem depois com passwd.'],
+ ['rede','CEBRASPE 10 · Rede','FUB · 2015','DNS, no nível de aplicação da camada de transporte do TCP, mapeia nomes e endereços.','Certo','Errado','O DNS é só da camada de aplicação. A questão misturou com a de transporte.'],
+ ['rede','FCC 2 · Rede','TCE-SP · 2010','Arquivo que dispensa a consulta a um servidor DNS para obter o IP.','A) /etc/nameserver','D) /etc/hosts','/etc/hosts = tradução fixa e local.'],
+ ['rede','MULTIBANCAS 1 · Rede','IF-MG · 2025','Arquivo usado para definir os servidores DNS.','D) /etc/hosts','C) /etc/resolv.conf','resolv.conf = quem resolve. hosts = tabela fixa.'],
+ ['rede','MULTIBANCAS 5 · Rede','UFG · 2023','Arquivos de configuração de rede que existem no Linux.','B) /etc/hosts e /etc/interface/host','C) /etc/network/interfaces e /etc/resolv.conf','O segundo arquivo da opção B não existe.'],
+ ['rede','MULTIBANCAS 13 · Rede','CEFET-MG · 2021','Arquivo de configuração de rede no Debian 10.','C) /etc/interfaces/network','D) /etc/network/interfaces','A ordem é network/interfaces.'],
+ ['rede','MULTIBANCAS 25 · Rede','BANRISUL · 2018','Resposta DNS "non authoritative" vem de um RR armazenado…','D) no arquivo de zona do primário','A) em um cache de DNS','Primário e secundário são autoritativos. O cache não é.'],
+ ['rede','MULTIBANCAS 33 · Rede','Pol. Científica-PR · 2017','RR que liga um nome canônico a um endereço IP.','C) NS','D) A','A = IPv4, AAAA = IPv6, NS = servidor de nomes.'],
+ ['base','FGV 2 · Conceitos','MPE-AL · 2018','No CentOS 7, saber se o pacote httpd está instalado e qual a versão.','C) apt-get find httpd','A) rpm -q httpd','CentOS usa RPM/YUM. -q = query.'],
+ ['base','VUNESP 1 · Conceitos','Câm. Sertãozinho · 2019','Executar um comando em segundo plano.','C) seguido de bg','D) seguido de &','& já lança em background. O bg só vale depois do Ctrl+Z.'],
+ ['base','MULTIBANCAS 20 · Conceitos','UFAL · 2018','Kernel: I compilar tira drivers · II módulos em /boot · III uname -a · IV módulos sob demanda.','C) III e IV','D) I, III e IV','Os módulos ficam em /lib/modules. O item I também está certo.'],
+ ['perm','CEBRASPE 6 · Permissões','POLITEC-RO · 2022','Equivalente a chmod a-rxw,u+r,g+rw.','E) chmod 046','C) chmod 460','Ordem U G O: dono r=4, grupo rw=6, outros 0.'],
+ ['perm','CEBRASPE 10 · Montagem','TCE-PA · 2016','mount -t vfat monta partição DOS/Windows dentro da árvore do Linux.','Errado','Certo','vfat = família FAT, e -t informa o tipo.'],
+ ['perm','FCC 1 · Montagem','TRT4 · 2015','Montagem automática de partição CIFS no boot.','C) /etc/mount','A) /etc/fstab','fstab = o que montar. mtab = o que está montado.'],
+ ['proc','CEBRASPE 9 · Processos','STJ · 2015','renice -10 -u jdev -p 650 reinicia os processos de jdev e o PID 650.','Certo','Errado','renice muda a prioridade (nice), não reinicia.'],
+ ['proc','FGV 6 · Processos','MPE-AL · 2018','I init adota órfãos · II zumbi nunca termina · III −20 a 19, menor = mais prioridade.','C) III apenas','D) I e III','I também está certa. Zumbi é o processo tentando se destruir.'],
+ ['proc','VUNESP 5 · Processos','UNICAMP · 2022','Coluna TIME+ do top (modo não cumulativo).','C) % de CPU desde a última atualização','B) tempo total de CPU desde o início','TIME+ é tempo de CPU. %CPU é outra coluna.'],
+ ['shell','FCC 6 · Shell','SANASA · 2019','Verificar problemas e causas de erro em sanasa.sh.','B) kdsh -l sanasa.sh','A) sh -x sanasa.sh','-x = depuração: mostra cada comando antes de executar.'],
+ ['shell','MULTIBANCAS 5 · Shell','Massaranduba · 2020','i=3; k=2; let j=k**i; echo $j','E) 2','C) 8','** é potência: 2³ = 8.'],
+ ['shell','MULTIBANCAS 9 · Shell','UECE · 2017','x=-9; echo -n "( "; exit x — o que ocorre com ./prog.sh && echo " fim"?','D) erro: x não pode ser negativo','B) "( " e erro: x não é argumento numérico','Sem $, exit recebe a letra x. Como deu erro, o && não executa.'],
+ ['bsd','MULTIBANCAS 1 · FreeBSD','UDESC · 2022','Elementos que caracterizam uma jail no FreeBSD.','B) 1, 2, 3 e 5','E) 2, 3, 4 e 5','Subárvore de diretórios, hostname, IP e comando.']
+];
+const T={all:'Todos',cmd:'Comandos',rede:'Rede e DNS',base:'Conceitos',perm:'Permissões',proc:'Processos',shell:'Shell',bsd:'FreeBSD'};
+const TO={cmd:'#cmd',rede:'#rede',base:'#base',perm:'#perm',proc:'#proc',shell:'#shell',bsd:'#bsd'};
+const L=document.getElementById('errlist');
+L.innerHTML=E.map(e=>`<article class="err" data-k="${e[0]}"><div class="q">${esc(e[1])}</div><div class="src">${esc(e[2])} · marcada com X</div><div class="stmt">${esc(e[3])}</div><div class="res"><span class="you">Você: ${esc(e[4])}</span><span class="gab">Gabarito: ${esc(e[5])}</span></div><div class="rule">${esc(e[6])} <a href="${TO[e[0]]}">ver tema</a></div></article>`).join('');
+const cnt=k=>k==='all'?E.length:E.filter(e=>e[0]===k).length;
+const F=document.getElementById('filtros');
+F.innerHTML=Object.keys(T).map(k=>`<button type="button" data-f="${k}" aria-pressed="${k==='all'}">${esc(T[k])} (${cnt(k)})</button>`).join('');
+F.addEventListener('click',ev=>{const b=ev.target.closest('button');if(!b)return;for(const o of F.children)o.setAttribute('aria-pressed',o===b);const f=b.dataset.f;for(const a of L.children)a.hidden=!(f==='all'||a.dataset.k===f)});
+
+const bars=(id,rows,top)=>{const mx=Math.max(...rows.map(r=>r[1]));document.getElementById(id).innerHTML=rows.map((r,i)=>`<div class="bar${i<top?' top':''}"><span>${esc(r[0])}</span><span><i style="width:${(r[1]/mx*100).toFixed(1)}%"></i></span><span>${r[1]}</span></div>`).join('')};
+bars('bars1',[['Comandos diversos',82],['Rede, DNS e segurança',67],['Conceitos básicos',60],['Permissões, montagem, root',50],['Processos',31],['Shell script',30],['FreeBSD',4]],3);
+bars('bars2',[['Diretórios e arquivos do sistema',98],['Usuários, root e sudo',60],['Permissões (chmod, umask…)',58],['Processos (ps, kill, nice)',57],['Shell script e variáveis',55],['Rede (ip, ifconfig, ssh…)',51],['DNS, resolv.conf, hosts',39],['Filtros (grep, sed, find…)',34],['Kernel, boot, systemd',29],['Pacotes (apt, yum, rpm)',23],['Montagem e fstab',23]],3);
+
+const fl=[
+ ['No Linux, sudo apt-get install slapd ldap-utils instala o OpenLDAP.','C','slapd é o daemon do OpenLDAP.'],
+ ['O Linux pode ser instalado em uma partição ext4.','C','—'],
+ ['yum upgrade baixa pacotes, incluindo os marcados como obsoletos, dos repositórios configurados.','C','upgrade = update + trata os obsoletos.'],
+ ['No boot, carregar e descompactar o kernel é tarefa do carregador de 1º estágio.','E','O 2º estágio carrega o kernel, e o kernel se descompacta.'],
+ ['O kernel interpreta os comandos executados no terminal.','E','Quem interpreta é o shell.'],
+ ['Um desktop Linux pode ter no máximo cinco usuários simultâneos.','E','Não há esse limite fixo.'],
+ ['Carregar o kernel e executar os scripts de inicialização são etapas do boot do Linux.','C','—'],
+ ['chmod +x script.sh concede a permissão de execução necessária.','C','Sem u/g/o, vale para todos.'],
+ ['Se o retorno em $? for 1, o comando teve sucesso.','E','Sucesso = 0.'],
+ ['Processos se comunicam por interrupções de software, canais em que um escreve bytes para o outro ler.','E','Isso é o pipe.'],
+ ['nice altera a prioridade de um processo já iniciado.','E','Para processo já iniciado é o renice.'],
+ ['renice -10 -u jdev -p 650 reinicia os processos de jdev e o PID 650.','E','renice ajusta a prioridade.'],
+ ['Um usuário comum pode terminar o próprio processo com kill.','C','—'],
+ ['Todo novo usuário recebe um UID, usado nos processos que ele cria.','C','—'],
+ ['O Linux impede UIDs iguais, exceto para o root.','E','O Linux não impede.'],
+ ['chmod 0177 dá rwx só ao dono.','E','Seria 0700.'],
+ ['O Linux não impede renomear o root nem criar contas com UID 0.','C','Não é recomendado, mas é possível.'],
+ ['mount -t vfat monta uma partição DOS/Windows na árvore do Linux.','C','vfat = FAT.'],
+ ['fdisk -l repara partições danificadas.','E','Lista. Quem repara é o fsck.'],
+ ['tail arq -n2 | head -n1 mostra a penúltima linha.','C','—'],
+ ['A coluna id do vmstat mostra o PID que consome CPU.','E','id = CPU ociosa.'],
+ ["echo 'umask 227' >> /home/roberto/.bashrc muda o umask só para roberto.",'C','—'],
+ ["sed 's/windows/linux/' maria > pedro grava a substituição em pedro.",'C','—'],
+ ['find acha o caminho do comando e which mostra a versão.','E','which mostra o caminho.'],
+ ['rm -f a.pdf b.zip remove os dois arquivos.','C','—'],
+ ['DNS: atualizações por UDP e consultas por TCP.','E','Consultas por UDP, zona por TCP.'],
+ ['O DNS está no nível de aplicação da camada de transporte do TCP.','E','Só aplicação.'],
+ ['O SMTP consulta registros MX para achar o servidor do destinatário.','C','—'],
+ ['route add 192.168.1.0 netmask 255.255.255.0 gw 192.168.1.1 encaminha a rede /24.','E','O gateway está dentro da própria rede /24, então a afirmação não se sustenta.'],
+ ['chkconfig smb on inicia o Samba e service smb start o carrega no boot.','E','Está invertido.'],
+ ['ifup e ifdown ativam e desativam uma interface.','C','—']
+];
+document.getElementById('flash').innerHTML=fl.map(f=>`<details><summary>${esc(f[0])}</summary><p><span class="${f[1]}">${f[1]==='C'?'CERTO':'ERRADO'}</span> · ${esc(f[2])}</p></details>`).join('');
+}
+</script>
+<script>{document.addEventListener("click",e=>{const a=e.target.closest('a[href^="#"]');if(!a)return;const id=decodeURIComponent(a.getAttribute("href").slice(1));const t=id&&document.getElementById(id);if(!t)return;e.preventDefault();t.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});try{history.replaceState(null,"","#"+id)}catch(_){}})}</script>
+<script>try{if(window.top===window.self)document.getElementById("siteBack").hidden=false}catch(e){}</script>
+</body>
+</html>
